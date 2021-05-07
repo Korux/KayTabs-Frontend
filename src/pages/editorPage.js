@@ -47,11 +47,22 @@ function KTabsEditor(){
 
     const [tabData, setTabData] = React.useState(initTabState);
     const [title, setTitle] = React.useState("");
-    const [selectedNote, setSelectedNote] = React.useState("quarter");
+
+    /*
+        1 = quarter
+        2 = half
+        4 = whole
+        8 = eighth
+        16 = sixteenth
+    */
+
+    const [selectedNote, setSelectedNote] = React.useState(1);
     const [selectedMode, setSelectedMode] = React.useState("plus");
 
     const [toast, setToast] = React.useState('none');
     const [toastMsg, setToastMsg] = React.useState('');
+
+    const [playLine, setPlayLine] = React.useState([0,0]);
 
     const loggedIn = useSelector(getUserLoggedIn);
     const userCreds = useSelector(getUserCreds);
@@ -162,17 +173,26 @@ function KTabsEditor(){
         }
     }
 
+    function playTablature(){
+
+        setPlayLine([1,1]);
+
+        setInterval(() => {
+            setPlayLine(l => l[1] === 4 ? [l[0] + 1, 1] : [l[0],l[1]+1]);
+        }, 1000);
+    }
+
     return(
         <>
             <ErrorToast onClose={() => setToast('none')} show={toast === 'err'} message={toastMsg}/>
             <SuccessToast onClose={() => setToast('none')} show={toast === 'succ'} message={toastMsg}/>
             <ToolBar mode={selectedMode} setMode={setSelectedMode} note={selectedNote} setNote={setSelectedNote} title={title} setTitle={setTitle}/>
-            <EditorSideButtons onAdd={addMeasure} onRemove={removeMeasure} onClear={clearMeasure} onSave={saveTablature}/>
+            <EditorSideButtons onAdd={addMeasure} onRemove={removeMeasure} onClear={clearMeasure} onSave={saveTablature} onPlay={playTablature}/>
             <MeasureContainer>
             <MeasureEnd/>
                 {
                 [...Array(tabData.measures),].map((val,i) => (
-                    <Measure count={tabData.measures - i} key={i} data={tabData} setData={setTabData} mode={selectedMode} type={"edit"}/>
+                    <Measure count={tabData.measures - i} key={i} data={tabData} setData={setTabData} mode={selectedMode} type={"edit"} notetype={selectedNote} active={playLine}/>
                 ))            
                 }
                 <MeasureBase/>    

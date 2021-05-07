@@ -104,23 +104,23 @@ function ToolBar(props){
         <StyledToolbar>
             <ToolbarContainer>
                 
-                <TButtonContainer type={"whole"} selected={props.note} onClick={() => props.setNote("whole")}>
+                <TButtonContainer type={4} selected={props.note} onClick={() => props.setNote(4)}>
                     <StyledNote src={Whole} alt="note"/>
                 </TButtonContainer>
 
-                <TButtonContainer type={"half"} selected={props.note} onClick={() => props.setNote("half")}>
+                <TButtonContainer type={2} selected={props.note} onClick={() => props.setNote(2)}>
                     <StyledNote src={Half} alt="note"/>
                 </TButtonContainer>
 
-                <TButtonContainer type={"quarter"} selected={props.note} onClick={() => props.setNote("quarter")}>
+                <TButtonContainer type={1} selected={props.note} onClick={() => props.setNote(1)}>
                     <StyledNote src={Quarter} alt="note"/>
                 </TButtonContainer>
 
-                <TButtonContainer type={"eighth"} selected={props.note} onClick={() => props.setNote("eighth")}>
+                <TButtonContainer type={8} selected={props.note} onClick={() => props.setNote(8)}>
                     <StyledNote src={Eighth} alt="note"/>
                 </TButtonContainer>
 
-                <TButtonContainer type={"sixteenth"} selected={props.note} onClick={() => props.setNote("sixteenth")}>
+                <TButtonContainer type={16} selected={props.note} onClick={() => props.setNote(16)}>
                     <StyledNote src={Sixteenth} alt="note"/>
                 </TButtonContainer>
 

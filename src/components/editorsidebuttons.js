@@ -142,7 +142,7 @@ function EditorSideButtons(props){
                         </Tooltip>
                     }
                     >
-                    <StyledButton>
+                    <StyledButton onClick={props.onPlay}>
                         <StyledIconAlt size={"lg"} icon={faPlay}/>
                     </StyledButton>
                 </OverlayTrigger>
