@@ -72,6 +72,7 @@ const ButtonContainer = styled.div`
     right:40px;
     top:40%;
     width:50px;
+    z-index:999;
 `;
 
 const ResetContainer = styled.div`
@@ -80,6 +81,7 @@ const ResetContainer = styled.div`
     right:20px;
     bottom:5px;
     width:65px; 
+    z-index:9s99;
 `;
 
 function EditorSideButtons(props){

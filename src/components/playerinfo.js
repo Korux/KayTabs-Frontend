@@ -71,7 +71,8 @@ const InfoContainer = styled.div`
     right:0;
     top:15%;
     width:25%;
-    height:550px;
+    height:55%;
+    z-index:999;
 `;
 
 const StyledImage = styled.img`
