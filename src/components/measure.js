@@ -23,6 +23,7 @@ const MHighlight = styled.div`
     position: absolute;
     top: 0;
     left: 0;
+    border-top:1px rgba(0,0,0,0.8);
     width: 100%;
     height: 100%;
 `;
@@ -206,7 +207,7 @@ function Measure(props){
                     <MNoteEnd>{genNoteEnd(j)}</MNoteEnd>
                     {[...Array(17),].map((val,i) => (
                         <MBlock i={i+1} j={j+1} key={i * (j+1)} type={props.type} onClick={ props.mode === "plus" ?  () => addNote(i,j, props.notetype) : () => removeNote(i,j)}>
-                            {/* <MHighlight active={props.active[0] === props.count && props.active[1] === 4-j}/> */}
+                            <MHighlight active={props.active[0] === props.count && props.active[1] === 4-j}/>
                             {genNote(i,j)}
                             
                         </MBlock>

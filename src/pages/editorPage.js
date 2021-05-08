@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Measure from '../components/measure';
 import MeasureBase from '../components/measurebase';
@@ -64,8 +64,19 @@ function KTabsEditor(){
 
     const [playLine, setPlayLine] = React.useState([0,0]);
 
+    const [BPM, setBPM] = React.useState(180);
+
+    const [playInterval, setPlayInterval] = React.useState(null);
+
     const loggedIn = useSelector(getUserLoggedIn);
     const userCreds = useSelector(getUserCreds);
+
+    useEffect(() => {
+        if(tabData.measures === playLine[0] && playLine[1] === 4) {
+            clearInterval(playInterval);
+            setTimeout(() => setPlayLine([0,0]), 60000 / BPM);
+        }
+    }, [playLine, playInterval, tabData, BPM]);
 
     function addMeasure(){
         let newData = tabData.notes.slice();
@@ -177,9 +188,11 @@ function KTabsEditor(){
 
         setPlayLine([1,1]);
 
-        setInterval(() => {
+        var play = setInterval(() => {
             setPlayLine(l => l[1] === 4 ? [l[0] + 1, 1] : [l[0],l[1]+1]);
-        }, 1000);
+        }, 60000 / BPM);
+
+        setPlayInterval(play);
     }
 
     return(

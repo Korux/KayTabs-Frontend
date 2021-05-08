@@ -20,6 +20,18 @@ function KTabsPlayer(){
     const { id } = useParams();
     const [tabInfo, setInfo] = React.useState(null);
 
+    const [playLine, setPlayLine] = React.useState([0,0]);
+    const [playInterval, setPlayInterval] = React.useState(null);
+
+
+    useEffect(() => {
+        if(tabInfo === null) return;
+        if(tabInfo.measures === playLine[0] && playLine[1] === 4) {
+            clearInterval(playInterval);
+            setTimeout(() => setPlayLine([0,0]), 60000 / tabInfo.bpm);
+        }
+    }, [playLine, playInterval, tabInfo]);
+
     useEffect(() => {
         fetch('http://localhost:3000/tabs/' + id)
         .then(response => response.json())
@@ -28,6 +40,17 @@ function KTabsPlayer(){
         });
         
     },[id]);
+
+    function playTablature(){
+
+        setPlayLine([1,1]);
+
+        var play = setInterval(() => {
+            setPlayLine(l => l[1] === 4 ? [l[0] + 1, 1] : [l[0],l[1]+1]);
+        }, 60000 / tabInfo.bpm);
+
+        setPlayInterval(play);
+    }
 
     function genPlayer(){
         if(tabInfo === null){
@@ -44,12 +67,12 @@ function KTabsPlayer(){
         }
         return(            
             <>
-                <PlayerInfo data={tabInfo}/>
+                <PlayerInfo data={tabInfo} onPlay = {playTablature}/>
                 <MeasureContainer>
                     <MeasureEnd/>
                         {
                         [...Array(tabInfo.measures),].map((val,i) => (
-                            <Measure count={tabInfo.measures - i} key={i} data={tabInfo}/>
+                            <Measure count={tabInfo.measures - i} key={i} data={tabInfo} active={playLine}/>
                         ))            
                         }
                     <MeasureBase/>    

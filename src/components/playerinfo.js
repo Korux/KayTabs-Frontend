@@ -212,7 +212,7 @@ function PlayerInfo(props){
                         <OtherInfo><OtherInfoIcon icon={faListOl} size={"lg"}/> : {props.data.measures}</OtherInfo>
                     </OverlayTrigger>
                     <PlayContainer>
-                        <button>Play</button>
+                        <button onClick={props.onPlay}>Play</button>
                     </PlayContainer>
                 </SongInfo>
 
