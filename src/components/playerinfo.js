@@ -60,6 +60,7 @@ const ResetContainer = styled.div`
     right:20px;
     bottom:5px;
     width:65px; 
+    z-index:999;
 `;
 const StyledIcon = styled(FontAwesomeIcon)`
     margin-left:0px;

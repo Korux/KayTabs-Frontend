@@ -23,7 +23,8 @@ const MHighlight = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    border-top:1px rgba(0,0,0,0.8);
+    border-top : ${({active}) => active ? '2px solid rgba(10,10,10, 0.9)' : '0px solid rgba(0,0,0,0)' } ;
+    border-bottom : ${({active}) => active ? '2px solid rgba(10,10,10, 0.9)' : '0px solid rgba(0,0,0,0)' } ;
     width: 100%;
     height: 100%;
 `;
