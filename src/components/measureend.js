@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import styled from 'styled-components';
 
 const MBlock = styled.div`
@@ -38,7 +38,7 @@ const MNoteEndLine = styled.hr`
 
 function MeasureEnd(){
     return(
-        <>
+        <Fragment>
             <MContainer>
                 <MNone/>
                 {[...Array(17),].map((val,i) => (
@@ -47,7 +47,7 @@ function MeasureEnd(){
                 <MNone/>
 
             </MContainer>
-        </>
+        </Fragment>
     );
 
 }

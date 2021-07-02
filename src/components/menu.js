@@ -1,77 +1,18 @@
-import React from 'react';
+import React, { Fragment, useEffect } from 'react'
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Link } from 'react-router-dom';
 
 import { getUserLoggedIn, getUserCreds } from '../redux/selectors';
-import { userLogin, userLogout, userRegister } from '../redux/actions';
+import { userLogin, userLogout } from '../redux/actions';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faListUl, faUser } from '@fortawesome/free-solid-svg-icons';
 
-import { Form, Button } from 'react-bootstrap';
-
 import { ErrorToast } from './toast';
 
-const StyledLRTitle = styled.span`
-    font-size:20px;
-    font-weight:650;
-    margin:40px 0 20px 0;
-`;
-
-const StyledButton = styled(Button)`
-    border-radius : 10% !important;
-    margin: 0 auto !important;
-`;
-
-const ButtonContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-`;
-
-function InputForm(props){
-
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    
-    function validateForm() {
-        return email.length > 0 && password.length > 0;
-    }
-
-    function handleSubmit(event){
-        event.preventDefault();
-        props.onSubmit(email,password);
-    }
-    return(
-        <>
-            <StyledLRTitle>{props.LogReg}</StyledLRTitle>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </Form.Group>
-
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                </Form.Group>
-                <ButtonContainer>
-                    <StyledButton variant="primary" type="submit" disabled={!validateForm()}>
-                        {props.LogReg}
-                    </StyledButton>
-                    <StyledButton variant="primary" onClick={props.onCancel}>
-                        Cancel
-                    </StyledButton>
-                </ButtonContainer>
-            </Form>
-        </>
-    );
-
-}
-
+import { useAuth0 } from "@auth0/auth0-react";
 
 const StyledDim = styled.a`
     display: inline-block;
@@ -123,10 +64,10 @@ const StyledMenu = styled.nav`
 
 `;
 
-const UserName = styled.span`
+const UserName = styled.div`
     color: ${({ theme }) => theme.secondaryDark};
     text-decoration: none;
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 600;
     margin : 0 auto;
 `;
@@ -199,106 +140,58 @@ function Menu({open, setOpen}){
     var loggedIn = useSelector(getUserLoggedIn);
     var userCreds = useSelector(getUserCreds);
 
-    const [LogReg, setLogReg] = React.useState('none');
-
     const [error, setError] = React.useState(false);
     const [errorMsg, setErrMsg] = React.useState('');
 
+    const { loginWithRedirect, logout } = useAuth0();
+    const { user, isAuthenticated } = useAuth0();
+
     const dispatch = useDispatch();
 
-    function userLR(email,password){
-        let creds = {
-            'email' : email,
-            'password' : password,
-        }
-        if(LogReg === "Login"){
-
-            fetch('http://localhost:3000/users?email=' + creds.email)
+    useEffect(() => {
+        if(isAuthenticated && user){
+            fetch('http://localhost:3000/users?email=' + user.email)
             .then(response => response.json())
             .then(data => {
                 if(!data.Error){
-                    if(data.password !== creds.password){
-                        setErrMsg("Password is incorrect.");
-                        setError(true);
-                    }else{
-                        let loginAction = userLogin(data);
-                        dispatch(loginAction);
-                    }
+                    let loginAction = userLogin(data);
+                    dispatch(loginAction);
                 }else{
                     setErrMsg(data.Error);
                     setError(true);
                 }
             });
-        }else if(LogReg === "Register"){
-
-            let reqData = {
-                email : creds.email,
-                password : creds.password,
-                name : creds.email.split("@")[0],
-                description : "Hello",
-                image : "https://cdn0.iconfinder.com/data/icons/online-shop-equitment-gliph/32/line-2_on_going_logo-02-512.png",
-                tabs : [],
-                starred : [],
-            }
-
-            let reqOpts = {
-                method : 'POST',
-                headers : {
-                    'Content-Type': 'application/json',
-                },
-                body : JSON.stringify(reqData),
-            }
-
-            fetch('http://localhost:3000/users', reqOpts)
-            .then(response => response.json())
-            .then(data => {
-                if(!data.Error){
-                    let registerAction = userRegister({...reqData, id : data.id});
-                    dispatch(registerAction);
-                }else{
-                    setErrMsg(data.Error);
-                    setError(true);
-                }
-            });
+        }else{
+            let logoutAction = userLogout();
+            dispatch(logoutAction);
         }
-        setLogReg('none');
-    }
-
-    function userLout(){
-        setLogReg('none');
-        let logoutAction = userLogout();
-        dispatch(logoutAction);
-    }
-
-
+    },[ isAuthenticated, user]);
     
     return(
-        <>
+        <Fragment>
             <ErrorToast onClose={() => setError(false)} show={error} message={errorMsg}/>
             <StyledDim key={"key01693"} open={open} onClick={() => setOpen(false)}/>
             <StyledMenu open={open}>
-            {
-                LogReg === 'none' ? 
-                <>
-                    <img src={userCreds.image} alt="pfp"/>
-                    <UserName>{userCreds.name}</UserName>
-                    <div>
-                        {loggedIn ? 
-                            <>
-                            <LRLink onClick={userLout}>Logout</LRLink>
-                            </> 
-                            : 
-                            <>
-                            <LRLink onClick={() => setLogReg('Login')}>Login</LRLink>|<LRLink onClick={() => setLogReg('Register')}>Register</LRLink> 
-                            </>
-                        }
-                    </div>
-                </> 
-                : 
-                <>
-                    <InputForm onSubmit={userLR} onCancel={() => setLogReg('none')} LogReg={LogReg}/>
-                </>
-            }
+
+            <div>
+                <img src={userCreds.image} alt="pfp"/>
+                <UserName>{userCreds.name}</UserName>
+                <div>
+                    {loggedIn ? 
+                        
+                        <LRLink onClick={() => logout({returnTo: "http://localhost:3001/editor"})}>Logout</LRLink>
+                        
+                        : 
+                        
+                        <Fragment>
+                            <LRLink onClick={() => loginWithRedirect()}>Login</LRLink>|<LRLink onClick={() => loginWithRedirect({screen_hint:"signup"})}>Register</LRLink> 
+                        </Fragment>
+                        
+                    }
+                </div>
+            </div> 
+            
+
 
             
             <HR/>
@@ -323,7 +216,7 @@ function Menu({open, setOpen}){
                 </LinkContainer>
             </StyledLink>
 
-            <StyledLinkProfile logged={loggedIn} to={"/profile/" + userCreds.id} onClick={() => {setOpen(false); window.scrollTo(0,0)}} >
+            <StyledLinkProfile logged={loggedIn ? 1 : 0} to={"/profile/" + userCreds.id} onClick={() => {setOpen(false); window.scrollTo(0,0)}} >
                 <LinkContainer>
                 <IconContainer>
                 <FaIcon size={"lg"} icon={faUser}/>
@@ -334,7 +227,7 @@ function Menu({open, setOpen}){
             </StyledLinkProfile>
 
             </StyledMenu>
-        </>
+        </Fragment>
     );
 }
 

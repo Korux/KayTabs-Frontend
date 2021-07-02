@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import styled from 'styled-components';
 
 const MBlock = styled.div`
@@ -37,7 +37,7 @@ function MeasureBase(){
     const dots = [':','.','.','.','.','','','','','','','','.','.','.',':',':'];
 
     return(
-        <>
+        <Fragment>
             <MContainer>
                 <MNone/>
                 {[...Array(17),].map((val,i) => (
@@ -46,7 +46,7 @@ function MeasureBase(){
                 <MNone/>
 
             </MContainer>
-        </>
+        </Fragment>
     );
 
 }

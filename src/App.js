@@ -19,16 +19,16 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <>  
+        
         <GlobalStyles />
         <NavBar/>
         <Switch>
 
-          <Route path="/tabs">
+          <Route exact path="/tabs">
             <KTabsViewer/>
           </Route>
 
-          <Route path="/editor">
+          <Route exact path="/editor">
             <KTabsEditor/>
           </Route>
 
@@ -58,7 +58,7 @@ function App() {
 
 
         </Switch>
-      </>
+      
     </ThemeProvider>
   );
 }

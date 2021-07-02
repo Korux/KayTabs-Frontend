@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import SearchFilter from '../components/searchfilter';
 import TabList from '../components/tablist';
 
@@ -27,10 +27,10 @@ function KTabsViewer(){
     }
 
     return(
-        <>
+        <Fragment>
             <SearchFilter onSearch={updateTabs}/>
             <TabList data={tabInfo}/>
-        </>
+        </Fragment>
     );
 
 }

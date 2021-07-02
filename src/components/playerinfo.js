@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown,faTachometerAlt, faClock, faListOl} from '@fortawesome/free-solid-svg-icons';
@@ -168,7 +168,7 @@ function PlayerInfo(props){
     }
 
     return(
-        <>
+        <Fragment>
             <InfoContainer>
                 <StyledImage src={props.data.image}/> 
                 <SongInfo>
@@ -224,7 +224,7 @@ function PlayerInfo(props){
                     <StyledIcon size={"2x"} icon={faAngleDown}/>
                 </ResetButton>
             </ResetContainer>
-        </>
+        </Fragment>
     );
 }
 

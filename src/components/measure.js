@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import styled from 'styled-components';
 
 const MBlock = styled.div`
@@ -154,54 +154,54 @@ function Measure(props){
         isRightMost = i >= rightMost;
 
         if(isRightMost && noteType){
-            if(noteType === 1) return (<><MNoteLineHalf/><MNote/></>);
-            if(noteType === 2) return (<><MNoteLineHalf/><MNoteWhite/></>);
-            if(noteType === 4) return (<><MNoteLineNone/><MNoteWhite/></>);
-            if(noteType === 8) return (<><MNoteLineHalf/><MNote/></>);
-            if(noteType === 16) return (<><MNoteLineHalf/><MNote/></>);
+            if(noteType === 1) return (<Fragment><MNoteLineHalf/><MNote/></Fragment>);
+            if(noteType === 2) return (<Fragment><MNoteLineHalf/><MNoteWhite/></Fragment>);
+            if(noteType === 4) return (<Fragment><MNoteLineNone/><MNoteWhite/></Fragment>);
+            if(noteType === 8) return (<Fragment><MNoteLineHalf/><MNote/></Fragment>);
+            if(noteType === 16) return (<Fragment><MNoteLineHalf/><MNote/></Fragment>);
         }
         if(!isRightMost && noteType){
-            if(noteType === 1) return (<><MNoteLine/><MNote/></>);
-            if(noteType === 2) return (<><MNoteLine/><MNoteWhite/></>);
-            if(noteType === 4) return (<><MNoteLineNone/><MNoteWhite/></>);
-            if(noteType === 8) return (<><MNoteLine/><MNote/></>);
-            if(noteType === 16) return (<><MNoteLine/><MNote/></>);
+            if(noteType === 1) return (<Fragment><MNoteLine/><MNote/></Fragment>);
+            if(noteType === 2) return (<Fragment><MNoteLine/><MNoteWhite/></Fragment>);
+            if(noteType === 4) return (<Fragment><MNoteLineNone/><MNoteWhite/></Fragment>);
+            if(noteType === 8) return (<Fragment><MNoteLine/><MNote/></Fragment>);
+            if(noteType === 16) return (<Fragment><MNoteLine/><MNote/></Fragment>);
         }
         if(i < rightMost && !noteType){
-            if(stanzaNoteType === 4) return(<></>);
-            return (<><MNoteLine/></>);
+            if(stanzaNoteType === 4) return(<Fragment></Fragment>);
+            return (<Fragment><MNoteLine/></Fragment>);
         }
-        return(<></>);
+        return(<Fragment></Fragment>);
     }
 
     function genNoteEnd(j){
         if(props.data.notes[props.count-1][j].includes(1)){
-            return (<><MNoteLine/></>);
+            return (<Fragment><MNoteLine/></Fragment>);
         }
         if(props.data.notes[props.count-1][j].includes(2)){
-            return (<><MNoteLine/></>);
+            return (<Fragment><MNoteLine/></Fragment>);
         }
         if(props.data.notes[props.count-1][j].includes(8)){
-            return (<>
+            return (<Fragment>
                 <MNoteLine/>
                 <MNoteEndEighth>
                 &#119150;
                 </MNoteEndEighth>
-            </>);
+            </Fragment>);
         }
         if(props.data.notes[props.count-1][j].includes(16)){
-            return (<>
+            return (<Fragment>
                 <MNoteLine/>
                 <MNoteEndSixteenth>
                 &#119151;
                 </MNoteEndSixteenth>
-            </>);
+            </Fragment>);
         }
-        return(<></>); 
+        return(<Fragment></Fragment>); 
     }
 
     return(
-        <>
+        <Fragment>
             {
             [...Array(4),].map((val,j) => (
                 <MLine key={j}>
@@ -217,7 +217,7 @@ function Measure(props){
                 </MLine>    
             ))            
             }
-        </>
+        </Fragment>
     );
 
 }

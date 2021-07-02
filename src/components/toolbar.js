@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import styled from 'styled-components';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 
@@ -93,88 +93,103 @@ const FaIcon = styled(FontAwesomeIcon)`
 
 `;
 
+const TBPMInput = styled.input`
 
+`;
 
 
 
 function ToolBar(props){
 
     return(
-        <>
-        <StyledToolbar>
-            <ToolbarContainer>
-                
-                <TButtonContainer type={4} selected={props.note} onClick={() => props.setNote(4)}>
-                    <StyledNote src={Whole} alt="note"/>
-                </TButtonContainer>
-
-                <TButtonContainer type={2} selected={props.note} onClick={() => props.setNote(2)}>
-                    <StyledNote src={Half} alt="note"/>
-                </TButtonContainer>
-
-                <TButtonContainer type={1} selected={props.note} onClick={() => props.setNote(1)}>
-                    <StyledNote src={Quarter} alt="note"/>
-                </TButtonContainer>
-
-                <TButtonContainer type={8} selected={props.note} onClick={() => props.setNote(8)}>
-                    <StyledNote src={Eighth} alt="note"/>
-                </TButtonContainer>
-
-                <TButtonContainer type={16} selected={props.note} onClick={() => props.setNote(16)}>
-                    <StyledNote src={Sixteenth} alt="note"/>
-                </TButtonContainer>
-
-
-        
-
-                <OverlayTrigger
-                    key={"2"}
-                    placement={"bottom"}
-                    overlay={
-                        <Tooltip id={`tooltip-bottom`}>
-                        Song Title
-                        </Tooltip>
-                    }
-                    >
-                    <TabTitle placeholder={"Song Name"} value={props.title} onChange={(e) => props.setTitle(e.target.value)}></TabTitle>
+        <Fragment>
+            <StyledToolbar>
+                <ToolbarContainer>
                     
-                </OverlayTrigger>
+                    <TButtonContainer type={4} selected={props.note} onClick={() => props.setNote(4)}>
+                        <StyledNote src={Whole} alt="note"/>
+                    </TButtonContainer>
+
+                    <TButtonContainer type={2} selected={props.note} onClick={() => props.setNote(2)}>
+                        <StyledNote src={Half} alt="note"/>
+                    </TButtonContainer>
+
+                    <TButtonContainer type={1} selected={props.note} onClick={() => props.setNote(1)}>
+                        <StyledNote src={Quarter} alt="note"/>
+                    </TButtonContainer>
+
+                    <TButtonContainer type={8} selected={props.note} onClick={() => props.setNote(8)}>
+                        <StyledNote src={Eighth} alt="note"/>
+                    </TButtonContainer>
+
+                    <TButtonContainer type={16} selected={props.note} onClick={() => props.setNote(16)}>
+                        <StyledNote src={Sixteenth} alt="note"/>
+                    </TButtonContainer>
 
 
-                <OverlayTrigger
-                    key={"0"}
-                    placement={"bottom"}
-                    overlay={
-                        <Tooltip id={`tooltip-bottom`}>
-                        Add Notes
-                        </Tooltip>
-                    }
-                    >
-                    <TModeContainer type={"plus"} selected={props.mode} onClick={() => props.setMode("plus")}>
-                        <FaIcon icon={faPlusCircle} size={"lg"}/>
-                    </TModeContainer>
-                    
-                </OverlayTrigger>
+            
 
-                <OverlayTrigger
-                    key={"1"}
-                    placement={"bottom"}
-                    overlay={
-                        <Tooltip id={`tooltip-bottom`}>
-                        Remove Notes
-                        </Tooltip>
-                    }
-                    >
-                    <TModeContainer type={"minus"} selected={props.mode} onClick={() => props.setMode("minus")}>
-                        <FaIcon icon={faMinusCircle} size={"lg"}/>
-                    </TModeContainer>
-                    
-                </OverlayTrigger>
+                    <OverlayTrigger
+                        key={"2"}
+                        placement={"bottom"}
+                        overlay={
+                            <Tooltip id={`tooltip-bottom`}>
+                            Song Title
+                            </Tooltip>
+                        }
+                        >
+                        <TabTitle placeholder={"Song Name"} value={props.title} onChange={(e) => props.setTitle(e.target.value)}></TabTitle>
+                        
+                    </OverlayTrigger>
 
-            </ToolbarContainer>
 
-        </StyledToolbar>
-        </>
+                    <OverlayTrigger
+                        key={"0"}
+                        placement={"bottom"}
+                        overlay={
+                            <Tooltip id={`tooltip-bottom`}>
+                            Add Notes
+                            </Tooltip>
+                        }
+                        >
+                        <TModeContainer type={"plus"} selected={props.mode} onClick={() => props.setMode("plus")}>
+                            <FaIcon icon={faPlusCircle} size={"lg"}/>
+                        </TModeContainer>
+                        
+                    </OverlayTrigger>
+
+                    <OverlayTrigger
+                        key={"1"}
+                        placement={"bottom"}
+                        overlay={
+                            <Tooltip id={`tooltip-bottom`}>
+                            Remove Notes
+                            </Tooltip>
+                        }
+                        >
+                        <TModeContainer type={"minus"} selected={props.mode} onClick={() => props.setMode("minus")}>
+                            <FaIcon icon={faMinusCircle} size={"lg"}/>
+                        </TModeContainer>
+                        
+                    </OverlayTrigger>
+
+                    <OverlayTrigger
+                        key={"3"}
+                        placement={"bottom"}
+                        overlay={
+                            <Tooltip id={`tooltip-bottom`}>
+                            BPM
+                            </Tooltip>
+                        }
+                        >
+                        <TBPMInput placeholder={"BPM"} value={props.bpm} onChange={(e) => props.setBPM(e.target.value)} type="number"/>
+                        
+                    </OverlayTrigger>
+
+                </ToolbarContainer>
+
+            </StyledToolbar>
+        </Fragment>
     );
 
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import Tab from '../components/tab';
 
 import styled from 'styled-components';
@@ -13,6 +13,10 @@ const TabColumn = styled.div`
     flex:1;
 `;
 
+const Error = styled.div`
+    margin-top:150px;
+`;
+
 function TabList(props){
 
     function genTabs(){
@@ -20,21 +24,15 @@ function TabList(props){
         let tabInfo = props.data;
 
         if(tabInfo === null){
-            return(<></>);
+            return(<Fragment></Fragment>);
         }
         if(tabInfo.Error){
-            const Error = styled.div`
-                margin-top:150px;
-            `;
             return(<Error>
                 <h1>Error</h1>
                 <span>Could not fetch tablatures. Please try again later. (｡•́︿•̀｡)</span>
             </Error>);
         }
         if(tabInfo.length === 0){
-            const Error = styled.div`
-                margin-top:150px;
-            `;
             return(<Error>
                 <h1>Error</h1>
                 <span>No Tablatures to display. (｡•́︿•̀｡)</span>
@@ -76,9 +74,9 @@ function TabList(props){
     }
 
     return(
-        <>
+        <Fragment>
             {genTabs()}
-        </>
+        </Fragment>
     );
 
 }

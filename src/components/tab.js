@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -136,7 +136,7 @@ function Tab(props){
     }
 
     return(
-        <>
+        <Fragment>
             <TabContainer>
                 <ImageContainer>
                     <TabImage src={props.data.image} alt="tabs"/>
@@ -163,7 +163,7 @@ function Tab(props){
 
 
             </TabContainer>
-        </>
+        </Fragment>
     );
 
 }

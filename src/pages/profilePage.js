@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import {  useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -33,7 +33,7 @@ function KTabsProfile(){
 
     function genProfile(){
         if(profileInfo === null){
-            return(<></>);
+            return(<Fragment></Fragment>);
         }
         if(profileInfo.Error){
             const Error = styled.div`
@@ -48,9 +48,9 @@ function KTabsProfile(){
     }
 
     return(
-        <>
+        <Fragment>
             {genProfile()}
-        </>
+        </Fragment>
     );
 
 }

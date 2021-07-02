@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import styled from 'styled-components';
 
 import { getUserCreds } from '../redux/selectors';
@@ -15,6 +15,11 @@ const ProfileContainer = styled.div`
     border-radius:50px;
 `;
 
+const ProfileImgContainer = styled.div`
+    width : 30%;
+
+`;
+
 const ProfileImage = styled.img`
 
     border-radius : 50%;
@@ -28,6 +33,24 @@ const ProfileImage = styled.img`
 
 `;
 
+const ProfileInfoContainer = styled.div`
+    width : 70%;
+
+`;
+
+const ProfileName = styled.div``;
+
+const ProfileInfo = styled.div``;
+
+const MainInfoContainer = styled.div`
+    display : flex;
+    justify-content:center;
+    width : 100%;
+    height : 50%;
+
+`;
+
+const ButtonContainer = styled.div``;
 
 function Profile(props){
 
@@ -36,22 +59,39 @@ function Profile(props){
 
     return(
       
-        <>
+        <Fragment>
             <ProfileContainer>
-                <ProfileImage src={props.data.image} alt="pfp"/><br/>
-                name:{props.data.name}<br/>
-                email:{props.data.email}<br/>
+
+                <MainInfoContainer>
+
+                    <ProfileImgContainer>
+                        <ProfileImage src={props.data.image} alt="pfp"/>
+                    </ProfileImgContainer>
+                    <ProfileInfoContainer>
+                        <ProfileName>{props.data.name}</ProfileName>
+                        <ProfileInfo>
+                        email:{props.data.email}<br/>
+                        no. tabs:{props.data.tabs.length}<br/>
+                        no. starred:{props.data.starred.length}<br/>
+                        </ProfileInfo>
+                    </ProfileInfoContainer>
+
+                </MainInfoContainer>
+
                 description:{props.data.description}<br/>
-                no. tabs:{props.data.tabs.length}<br/>
-                no. starred:{props.data.starred.length}<br/>
                 is my page:{props.data._id === userInfo.id ? "TRUE" : "FALSE"}<br/>
-                <button onClick={() => props.setTabs("tabs")}>Tabs</button>
-                <button onClick={() => props.setTabs("starred")}>Starred</button>
+
+                <ButtonContainer>
+
+                    <button onClick={() => props.setTabs("tabs")}>Tabs</button>
+                    <button onClick={() => props.setTabs("starred")}>Starred</button>
+
+                </ButtonContainer>
             
             </ProfileContainer>
 
             <TabList data={props.tabData}/>
-        </>
+        </Fragment>
 
     );
 

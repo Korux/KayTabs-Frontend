@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { Navbar } from 'react-bootstrap';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -53,39 +53,39 @@ function NavBar(){
     const [menuOpen, setMenuOpen] = React.useState(false);
 
     return(
-        <>
-            <StyledNavbar variant="dark" fixed="top">
-                <NavColumn>
-                <Burger open={menuOpen} setOpen={setMenuOpen}/>
-                <Menu open={menuOpen} setOpen={setMenuOpen}/>
-                </NavColumn>
+        
+        <StyledNavbar variant="dark" fixed="top">
+            <NavColumn>
+            <Burger open={menuOpen} setOpen={setMenuOpen}/>
+            <Menu open={menuOpen} setOpen={setMenuOpen}/>
+            </NavColumn>
 
-                <NavColumn>
-                <StyledBrand><img src={Logo} alt="logo"/></StyledBrand>
-                </NavColumn>
+            <NavColumn>
+            <StyledBrand><img src={Logo} alt="logo"/></StyledBrand>
+            </NavColumn>
 
-                <NavColumn>
-                    <LinkContainer>
-                        <FaLink href="https://facebook.com">
-                        <FaIcon size={"lg"} icon={faFacebook}/>
-                        </FaLink>
-                        <FaLink href="https://discord.com">
-                            <FaIcon size={"lg"} icon={faDiscord}/>
-                        </FaLink>
-                        <FaLink href="https://twitter.com">
-                            <FaIcon size={"lg"} icon={faTwitter}/>
-                        </FaLink>
-                        <FaLink href="http://github.com">
-                            <FaIcon size={"lg"} icon={faGithub}/>
-                        </FaLink>
-                    </LinkContainer>
-                </NavColumn>
+            <NavColumn>
+                <LinkContainer>
+                    <FaLink href="https://facebook.com">
+                    <FaIcon size={"lg"} icon={faFacebook}/>
+                    </FaLink>
+                    <FaLink href="https://discord.com">
+                        <FaIcon size={"lg"} icon={faDiscord}/>
+                    </FaLink>
+                    <FaLink href="https://twitter.com">
+                        <FaIcon size={"lg"} icon={faTwitter}/>
+                    </FaLink>
+                    <FaLink href="http://github.com">
+                        <FaIcon size={"lg"} icon={faGithub}/>
+                    </FaLink>
+                </LinkContainer>
+            </NavColumn>
 
 
 
-            </StyledNavbar>
+        </StyledNavbar>
 
-        </>
+        
     );
 
 }

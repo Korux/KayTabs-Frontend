@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 
 import {
     USER_LOGIN,
-    USER_REGISTER,
     USER_LOGOUT,
 } from './actions.js';
 
@@ -23,14 +22,6 @@ function userReducer(state=guestState, action){
                 description : action.creds.description,
                 image : "https://cdn0.iconfinder.com/data/icons/online-shop-equitment-gliph/32/line-2_on_going_logo-02-512.png",
                 id : action.creds._id,
-            };
-        case USER_REGISTER:
-            return {
-                loggedin : true,
-                name : action.creds.name,
-                description : action.creds.description,
-                image : "https://cdn0.iconfinder.com/data/icons/online-shop-equitment-gliph/32/line-2_on_going_logo-02-512.png",
-                id : action.creds.id,
             };
         case USER_LOGOUT:
             return guestState;

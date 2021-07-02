@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import styled from 'styled-components';
 import Measure from '../components/measure';
 import MeasureBase from '../components/measurebase';
@@ -77,6 +77,17 @@ function KTabsEditor(){
             setTimeout(() => setPlayLine([0,0]), 60000 / BPM);
         }
     }, [playLine, playInterval, tabData, BPM]);
+
+    useEffect(() => {
+        var stanza = tabData.notes[playLine[0] - 1];
+        if(stanza !== undefined){
+            var line = stanza[4 - playLine[1]];
+            if(line !== undefined){
+                //var notes = [];
+                //play notes here
+            }
+        }
+    }, [playLine, tabData]);
 
     function addMeasure(){
         let newData = tabData.notes.slice();
@@ -184,8 +195,23 @@ function KTabsEditor(){
         }
     }
 
-    function playTablature(){
+    function validateAndSetBPM(newBPM){
+        newBPM = parseInt(newBPM, 10);
+        if(newBPM > 999) newBPM = 999;
+        if(newBPM < 0) newBPM = 0;
+        if(isNaN(newBPM)){
+            setBPM('');
+            return;
+        }
+        setBPM(newBPM);
+    }
 
+    function playTablature(){
+        if(isNaN(parseInt(BPM,10))){
+            setToast('err');
+            setToastMsg("BPM cannot be empty.");
+            return;
+        }
         setPlayLine([1,1]);
 
         var play = setInterval(() => {
@@ -196,10 +222,10 @@ function KTabsEditor(){
     }
 
     return(
-        <>
+        <Fragment>
             <ErrorToast onClose={() => setToast('none')} show={toast === 'err'} message={toastMsg}/>
             <SuccessToast onClose={() => setToast('none')} show={toast === 'succ'} message={toastMsg}/>
-            <ToolBar mode={selectedMode} setMode={setSelectedMode} note={selectedNote} setNote={setSelectedNote} title={title} setTitle={setTitle}/>
+            <ToolBar mode={selectedMode} setMode={setSelectedMode} note={selectedNote} setNote={setSelectedNote} title={title} setTitle={setTitle} bpm={BPM} setBPM={validateAndSetBPM}/>
             <EditorSideButtons onAdd={addMeasure} onRemove={removeMeasure} onClear={clearMeasure} onSave={saveTablature} onPlay={playTablature}/>
             <MeasureContainer>
             <MeasureEnd/>
@@ -210,7 +236,7 @@ function KTabsEditor(){
                 }
                 <MeasureBase/>    
             </MeasureContainer>
-        </>
+        </Fragment>
     );
 
 }

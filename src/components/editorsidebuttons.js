@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 import styled from 'styled-components';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 
@@ -30,8 +30,6 @@ const StyledButton = styled.button`
     
     &:hover{
         background-color: rgb(120,120,120);
-        width:60px;
-        height:60px;
     }
 
     &:disabled{
@@ -81,7 +79,7 @@ const ResetContainer = styled.div`
     right:20px;
     bottom:5px;
     width:65px; 
-    z-index:9s99;
+    z-index:999;
 `;
 
 function EditorSideButtons(props){
@@ -89,7 +87,7 @@ function EditorSideButtons(props){
     const loggedIn = useSelector(getUserLoggedIn);
 
     return(
-        <>
+        <Fragment>
             <ButtonContainer>
 
                 <OverlayTrigger
@@ -170,7 +168,7 @@ function EditorSideButtons(props){
                     <StyledIcon size={"2x"} icon={faAngleDown}/>
                 </ResetButton>
             </ResetContainer>
-        </>
+        </Fragment>
     );
 
 }

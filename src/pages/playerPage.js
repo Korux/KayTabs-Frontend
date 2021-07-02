@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import {  useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -54,7 +54,7 @@ function KTabsPlayer(){
 
     function genPlayer(){
         if(tabInfo === null){
-            return(<></>);
+            return(<Fragment></Fragment>);
         }
         if(tabInfo.Error){
             const Error = styled.div`
@@ -66,7 +66,7 @@ function KTabsPlayer(){
             </Error>);
         }
         return(            
-            <>
+            <Fragment>
                 <PlayerInfo data={tabInfo} onPlay = {playTablature}/>
                 <MeasureContainer>
                     <MeasureEnd/>
@@ -77,16 +77,16 @@ function KTabsPlayer(){
                         }
                     <MeasureBase/>    
                 </MeasureContainer>
-            </>
+            </Fragment>
 
         );
     }
 
 
     return(
-        <>
+        <Fragment>
             {genPlayer()}
-        </>
+        </Fragment>
     );
 
 }
