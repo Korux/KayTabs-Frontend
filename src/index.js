@@ -12,7 +12,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 ReactDOM.render(
 <Auth0Provider
     domain="kaytabs.us.auth0.com"
-    clientId={"1oduMuPl9UGBxtF1xmIYgwzSZq05EjfH"}
+    clientId={"s"}
     redirectUri={"http://localhost:3001/editor"}
   >
     <Provider store={store}>
