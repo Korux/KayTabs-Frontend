@@ -23,8 +23,6 @@ const MHighlight = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    border-top : ${({active}) => active ? '2px solid rgba(10,10,10, 0.9)' : '0px solid rgba(0,0,0,0)' } ;
-    border-bottom : ${({active}) => active ? '2px solid rgba(10,10,10, 0.9)' : '0px solid rgba(0,0,0,0)' } ;
     width: 100%;
     height: 100%;
 `;
@@ -125,6 +123,14 @@ function Measure(props){
         if(newData[props.count-1][j][i] !== 0) return;
         if(!newData[props.count-1][j].includes(type) && newData[props.count-1][j].reduce((a, b) => a + b, 0) !== 0) return;
         newData[props.count-1][j][i] = type;
+        if (type === 2){
+            newData[props.count-1][j-1][i] = -1;
+        }
+        if (type === 4){
+            newData[props.count-1][j-1][i] = -1;
+            newData[props.count-1][j-2][i] = -1;
+            newData[props.count-1][j-3][i] = -1;
+        }
         let mCount = props.data.measures;
         props.setData({measures:mCount, notes:newData});
     }
@@ -159,6 +165,7 @@ function Measure(props){
             if(noteType === 4) return (<Fragment><MNoteLineNone/><MNoteWhite/></Fragment>);
             if(noteType === 8) return (<Fragment><MNoteLineHalf/><MNote/></Fragment>);
             if(noteType === 16) return (<Fragment><MNoteLineHalf/><MNote/></Fragment>);
+            if(noteType === -1) return(<Fragment></Fragment>);
         }
         if(!isRightMost && noteType){
             if(noteType === 1) return (<Fragment><MNoteLine/><MNote/></Fragment>);
@@ -166,9 +173,10 @@ function Measure(props){
             if(noteType === 4) return (<Fragment><MNoteLineNone/><MNoteWhite/></Fragment>);
             if(noteType === 8) return (<Fragment><MNoteLine/><MNote/></Fragment>);
             if(noteType === 16) return (<Fragment><MNoteLine/><MNote/></Fragment>);
+            if(noteType === -1) return(<Fragment></Fragment>);
         }
         if(i < rightMost && !noteType){
-            if(stanzaNoteType === 4) return(<Fragment></Fragment>);
+            if(stanzaNoteType === 4 || stanzaNoteType === -1) return(<Fragment></Fragment>);
             return (<Fragment><MNoteLine/></Fragment>);
         }
         return(<Fragment></Fragment>);
@@ -200,6 +208,7 @@ function Measure(props){
         return(<Fragment></Fragment>); 
     }
 
+    
     return(
         <Fragment>
             {
@@ -208,7 +217,7 @@ function Measure(props){
                     <MNoteEnd>{genNoteEnd(j)}</MNoteEnd>
                     {[...Array(17),].map((val,i) => (
                         <MBlock i={i+1} j={j+1} key={i * (j+1)} type={props.type} onClick={ props.mode === "plus" ?  () => addNote(i,j, props.notetype) : () => removeNote(i,j)}>
-                            <MHighlight active={props.active[0] === props.count && props.active[1] === 4-j}/>
+                            <MHighlight active={props.active[0] === props.count && props.active[1].includes(4-j)}/>
                             {genNote(i,j)}
                             
                         </MBlock>

@@ -62,21 +62,55 @@ function KTabsEditor(){
     const [toast, setToast] = React.useState('none');
     const [toastMsg, setToastMsg] = React.useState('');
 
-    const [playLine, setPlayLine] = React.useState([0,0]);
-
     const [BPM, setBPM] = React.useState(180);
 
-    const [playInterval, setPlayInterval] = React.useState(null);
+    const [playLine, setPlayLine] = React.useState([0,[0]]);
 
     const loggedIn = useSelector(getUserLoggedIn);
     const userCreds = useSelector(getUserCreds);
 
     useEffect(() => {
-        if(tabData.measures === playLine[0] && playLine[1] === 4) {
-            clearInterval(playInterval);
-            setTimeout(() => setPlayLine([0,0]), 60000 / BPM);
+        if(playLine[0] > 0){
+            var currStanza = playLine.slice();
+            var currLine = playLine[1][playLine[1].length - 1];
+            var nextLine = currLine === 4 ? [playLine[0] + 1, 1] : [playLine[0], currLine + 1];
+            var nextNoteType;
+            if(nextLine[0] > tabData.measures){
+                nextLine = [0,0];
+                nextNoteType = 0;
+            }else{
+                nextNoteType = tabData.notes[nextLine[0] - 1][4 - nextLine[1]];
+                nextNoteType = Math.max.apply(null, nextNoteType);
+            }
+
+            var newLine;
+            switch(nextNoteType){
+                case 1:
+                    newLine = [nextLine[0], [nextLine[1]]];
+                    break;
+                case 2:
+                    newLine = [nextLine[0], [nextLine[1], nextLine[1] + 1]];
+                    break;
+                case 4:
+                    newLine = [nextLine[0], [nextLine[1], nextLine[1] + 1, nextLine[1] + 2, nextLine[1] + 3]];
+                    break;
+                default:
+                    newLine = [nextLine[0], [nextLine[1]]];
+                    break;
+            }
+
+            var Time = 60000 * currStanza[1].length / BPM;
+            if(nextNoteType === 8){
+                Time = Time / 2;
+            }else if(nextNoteType === 16){
+                Time = Time / 4;
+            }
+
+            setTimeout(() => {
+                setPlayLine(newLine);
+            }, Time);
         }
-    }, [playLine, playInterval, tabData, BPM]);
+    },[playLine]);
 
     useEffect(() => {
         var stanza = tabData.notes[playLine[0] - 1];
@@ -212,13 +246,16 @@ function KTabsEditor(){
             setToastMsg("BPM cannot be empty.");
             return;
         }
-        setPlayLine([1,1]);
 
-        var play = setInterval(() => {
-            setPlayLine(l => l[1] === 4 ? [l[0] + 1, 1] : [l[0],l[1]+1]);
-        }, 60000 / BPM);
-
-        setPlayInterval(play);
+        if(tabData.notes[0][3].includes(1)){
+            setPlayLine([1,[1]]);
+        }
+        else if(tabData.notes[0][3].includes(2)){
+            setPlayLine([1,[1,2]]);
+        }
+        else if(tabData.notes[0][3].includes(4)){
+            setPlayLine([1,[1,2,3,4]]);
+        }
     }
 
     return(
