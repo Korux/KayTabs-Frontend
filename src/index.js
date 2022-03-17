@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import store from './redux/store';
 
-import {BrowserRouter} from 'react-router-dom';
+import {HashRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 
 import { Auth0Provider } from "@auth0/auth0-react";
@@ -16,9 +16,9 @@ ReactDOM.render(
     redirectUri={"http://localhost:3001/editor"}
   >
     <Provider store={store}>
-      <BrowserRouter>
+      <HashRouter>
         <App />
-      </BrowserRouter>
+      </HashRouter>
     </Provider>
   </Auth0Provider>
   ,
