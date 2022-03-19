@@ -3,6 +3,7 @@ import {  useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Profile from '../components/profile';
+import globalVars from '../global';
 
 function KTabsProfile(){
     const { id } = useParams();
@@ -12,13 +13,13 @@ function KTabsProfile(){
     const [tabType, setType] = React.useState("tabs");
 
     useEffect(() => {
-        fetch('http://localhost:3000/users/' + id)
+        fetch(globalVars.server + '/users/' + id)
         .then(response => response.json())
         .then(data => {
             setInfo(data);
         });
         if(profileInfo !== null){
-            fetch('http://localhost:3000/tabs?search=' + profileInfo.name)
+            fetch(globalVars.server + '/tabs?search=' + profileInfo.name)
             .then(response => response.json())
             .then(data => {
                 setTabInfo(data);

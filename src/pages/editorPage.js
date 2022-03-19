@@ -11,6 +11,8 @@ import {SuccessToast, ErrorToast } from '../components/toast';
 
 import EditorSideButtons from '../components/editorsidebuttons';
 
+import globalVars from '../global';
+
 const MeasureContainer = styled.div`
     padding-top:100px;
     height : auto;
@@ -206,11 +208,11 @@ function KTabsEditor(){
                 body : JSON.stringify({type:"tab"}),
             }
 
-            fetch('http://localhost:3000/tabs', reqOpts)
+            fetch( globalVars.server + '/tabs', reqOpts)
             .then(response => response.json())
             .then(data => {
                 if(!data.Error){
-                    fetch('http://localhost:3000/users/' + userCreds.id + '/tabs/' + data.id, reqPutOpts)
+                    fetch(globalVars.server + '/users/' + userCreds.id + '/tabs/' + data.id, reqPutOpts)
                     .then(response => response.json())
                     .then(data => {
                         if(!data.Error){

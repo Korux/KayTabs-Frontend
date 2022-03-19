@@ -1,7 +1,7 @@
 import React, { useEffect, Fragment } from 'react';
 import SearchFilter from '../components/searchfilter';
 import TabList from '../components/tablist';
-
+import globalVars from '../global';
 
 
 function KTabsViewer(){
@@ -10,7 +10,7 @@ function KTabsViewer(){
 
     useEffect(() => {
         if(tabInfo === null){
-            fetch('http://localhost:3000/tabs')
+            fetch(globalVars.server + '/tabs')
             .then(response => response.json())
             .then(data => {
                 setInfo(data);
@@ -19,7 +19,7 @@ function KTabsViewer(){
     });
 
     function updateTabs(query){
-        fetch('http://localhost:3000/tabs?search=' + query)
+        fetch(globalVars.server + '/tabs?search=' + query)
         .then(response => response.json())
         .then(data => {
             setInfo(data);

@@ -13,6 +13,7 @@ import { faEdit, faListUl, faUser } from '@fortawesome/free-solid-svg-icons';
 import { ErrorToast } from './toast';
 
 import { useAuth0 } from "@auth0/auth0-react";
+import globalVars from '../global';
 
 const StyledDim = styled.a`
     display: inline-block;
@@ -150,7 +151,7 @@ function Menu({open, setOpen}){
 
     useEffect(() => {
         if(isAuthenticated && user){
-            fetch('http://localhost:3000/users?email=' + user.email)
+            fetch(globalVars.server + '/users?email=' + user.email)
             .then(response => response.json())
             .then(data => {
                 if(!data.Error){
@@ -179,7 +180,7 @@ function Menu({open, setOpen}){
                 <div>
                     {loggedIn ? 
                         
-                        <LRLink onClick={() => logout({returnTo: "http://localhost:3001/editor"})}>Logout</LRLink>
+                        <LRLink onClick={() => logout({returnTo: globalVars.url})}>Logout</LRLink>
                         
                         : 
                         

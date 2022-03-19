@@ -8,6 +8,8 @@ import MeasureEnd from '../components/measureend';
 
 import PlayerInfo from '../components/playerinfo';
 
+import globalVars from '../global';
+
 const MeasureContainer = styled.div`
     padding-top:100px;
     height : auto;
@@ -33,7 +35,7 @@ function KTabsPlayer(){
     }, [playLine, playInterval, tabInfo]);
 
     useEffect(() => {
-        fetch('http://localhost:3000/tabs/' + id)
+        fetch(globalVars.server +  + '/tabs/' + id)
         .then(response => response.json())
         .then(data => {
             setInfo(data);
