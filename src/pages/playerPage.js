@@ -35,7 +35,7 @@ function KTabsPlayer(){
     }, [playLine, playInterval, tabInfo]);
 
     useEffect(() => {
-        fetch(globalVars.server +  + '/tabs/' + id)
+        fetch(globalVars.server + '/tabs/' + id)
         .then(response => response.json())
         .then(data => {
             setInfo(data);
