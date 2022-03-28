@@ -23,16 +23,50 @@ function KTabsPlayer(){
     const [tabInfo, setInfo] = React.useState(null);
 
     const [playLine, setPlayLine] = React.useState([0,0]);
-    const [playInterval, setPlayInterval] = React.useState(null);
-
 
     useEffect(() => {
-        if(tabInfo === null) return;
-        if(tabInfo.measures === playLine[0] && playLine[1] === 4) {
-            clearInterval(playInterval);
-            setTimeout(() => setPlayLine([0,0]), 60000 / tabInfo.bpm);
+        if(playLine[0] > 0){
+            var currStanza = playLine.slice();
+            var currLine = playLine[1][playLine[1].length - 1];
+            var nextLine = currLine === 4 ? [playLine[0] + 1, 1] : [playLine[0], currLine + 1];
+            var nextNoteType;
+            if(nextLine[0] > tabInfo.measures){
+                nextLine = [0,0];
+                nextNoteType = 0;
+            }else{
+                nextNoteType = tabInfo.notes[nextLine[0] - 1][4 - nextLine[1]];
+                nextNoteType = Math.max.apply(null, nextNoteType);
+            }
+
+            var newLine;
+            switch(nextNoteType){
+                case 1:
+                    newLine = [nextLine[0], [nextLine[1]]];
+                    break;
+                case 2:
+                    newLine = [nextLine[0], [nextLine[1], nextLine[1] + 1]];
+                    break;
+                case 4:
+                    newLine = [nextLine[0], [nextLine[1], nextLine[1] + 1, nextLine[1] + 2, nextLine[1] + 3]];
+                    break;
+                default:
+                    newLine = [nextLine[0], [nextLine[1]]];
+                    break;
+            }
+
+            var Time = 60000 * currStanza[1].length / tabInfo.bpm;
+            if(nextNoteType === 8){
+                Time = Time / 2;
+            }else if(nextNoteType === 16){
+                Time = Time / 4;
+            }
+
+            setTimeout(() => {
+                setPlayLine(newLine);
+            }, Time);
         }
-    }, [playLine, playInterval, tabInfo]);
+    },[playLine]);
+
 
     useEffect(() => {
         fetch(globalVars.server + '/tabs/' + id)
@@ -44,14 +78,15 @@ function KTabsPlayer(){
     },[id]);
 
     function playTablature(){
-
-        setPlayLine([1,1]);
-
-        var play = setInterval(() => {
-            setPlayLine(l => l[1] === 4 ? [l[0] + 1, 1] : [l[0],l[1]+1]);
-        }, 60000 / tabInfo.bpm);
-
-        setPlayInterval(play);
+        if(tabInfo.notes[0][3].includes(1)){
+            setPlayLine([1,[1]]);
+        }
+        else if(tabInfo.notes[0][3].includes(2)){
+            setPlayLine([1,[1,2]]);
+        }
+        else if(tabInfo.notes[0][3].includes(4)){
+            setPlayLine([1,[1,2,3,4]]);
+        }
     }
 
     function genPlayer(){

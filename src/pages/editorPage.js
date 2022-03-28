@@ -114,17 +114,6 @@ function KTabsEditor(){
         }
     },[playLine]);
 
-    useEffect(() => {
-        var stanza = tabData.notes[playLine[0] - 1];
-        if(stanza !== undefined){
-            var line = stanza[4 - playLine[1]];
-            if(line !== undefined){
-                //var notes = [];
-                //play notes here
-            }
-        }
-    }, [playLine, tabData]);
-
     function addMeasure(){
         let newData = tabData.notes.slice();
         newData.push([
