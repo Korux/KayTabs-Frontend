@@ -8,6 +8,8 @@ import MeasureEnd from '../components/measureend';
 
 import PlayerInfo from '../components/playerinfo';
 
+import Loading from 'react-loading';
+
 import globalVars from '../global';
 
 const MeasureContainer = styled.div`
@@ -18,14 +20,21 @@ const MeasureContainer = styled.div`
     margin:0 100px;
 `;
 
+const TabsLoading = styled(Loading)`
+    margin : 150px auto;
+`;
+
 function KTabsPlayer(){
     const { id } = useParams();
     const [tabInfo, setInfo] = React.useState(null);
 
     const [playLine, setPlayLine] = React.useState([0,0]);
+    
+    const [playing, setPlaying] = React.useState(false);
 
     useEffect(() => {
-        if(playLine[0] > 0){
+        let mounted = true;
+        if(playLine[0] > 0 && mounted){
             var currStanza = playLine.slice();
             var currLine = playLine[1][playLine[1].length - 1];
             var nextLine = currLine === 4 ? [playLine[0] + 1, 1] : [playLine[0], currLine + 1];
@@ -36,6 +45,16 @@ function KTabsPlayer(){
             }else{
                 nextNoteType = tabInfo.notes[nextLine[0] - 1][4 - nextLine[1]];
                 nextNoteType = Math.max.apply(null, nextNoteType);
+                while(nextNoteType === 0){
+                    nextLine = nextLine[1] === 4 ? [nextLine[0] + 1, 1] : [nextLine[0], nextLine[1] + 1];
+                    if(nextLine[0] > tabInfo.measures){
+                        nextLine = [0,0];
+                        nextNoteType = 0;
+                        break;
+                    }
+                    nextNoteType = tabInfo.notes[nextLine[0] - 1][4 - nextLine[1]];
+                    nextNoteType = Math.max.apply(null, nextNoteType);
+                }
             }
 
             var newLine;
@@ -64,20 +83,29 @@ function KTabsPlayer(){
             setTimeout(() => {
                 setPlayLine(newLine);
             }, Time);
+        }else{
+            setPlaying(false);
         }
+
+        return () =>{mounted = false;};
+
     },[playLine]);
 
 
     useEffect(() => {
+        let mounted = true;
         fetch(globalVars.server + '/tabs/' + id)
         .then(response => response.json())
         .then(data => {
-            setInfo(data);
+            if(mounted)setInfo(data);
         });
+
+        return () =>{mounted = false;};
         
     },[id]);
 
     function playTablature(){
+        setPlaying(true);
         if(tabInfo.notes[0][3].includes(1)){
             setPlayLine([1,[1]]);
         }
@@ -91,7 +119,7 @@ function KTabsPlayer(){
 
     function genPlayer(){
         if(tabInfo === null){
-            return(<Fragment></Fragment>);
+            return(<TabsLoading type={'spin'} color={'#DDDDDD'} height={'10%'} width={'10%'} />);
         }
         if(tabInfo.Error){
             const Error = styled.div`
@@ -104,7 +132,7 @@ function KTabsPlayer(){
         }
         return(            
             <Fragment>
-                <PlayerInfo data={tabInfo} onPlay = {playTablature}/>
+                <PlayerInfo playing={playing} data={tabInfo} onPlay = {playTablature}/>
                 <MeasureContainer>
                     <MeasureEnd/>
                         {

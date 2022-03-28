@@ -122,14 +122,23 @@ function Measure(props){
         let newData = props.data.notes.slice();
         if(newData[props.count-1][j][i] !== 0) return;
         if(!newData[props.count-1][j].includes(type) && newData[props.count-1][j].reduce((a, b) => a + b, 0) !== 0) return;
-        newData[props.count-1][j][i] = type;
         if (type === 2){
-            newData[props.count-1][j-1][i] = -1;
+            if(j === 0) return;
+            if(newData[props.count-1][j-1].reduce((a, b) => a + b, 0) > 0) return;
+            newData[props.count-1][j][i] = type;
+            newData[props.count-1][j-1][i] = -99;
         }
-        if (type === 4){
-            newData[props.count-1][j-1][i] = -1;
-            newData[props.count-1][j-2][i] = -1;
-            newData[props.count-1][j-3][i] = -1;
+        else if (type === 4){
+            if(j !== 3) return;
+            if(newData[props.count-1][j-1].reduce((a, b) => a + b, 0) > 0
+            || newData[props.count-1][j-2].reduce((a, b) => a + b, 0) > 0
+            || newData[props.count-1][j-3].reduce((a, b) => a + b, 0) > 0) return;
+            newData[props.count-1][j][i] = type;
+            newData[props.count-1][j-1][i] = -99;
+            newData[props.count-1][j-2][i] = -99;
+            newData[props.count-1][j-3][i] = -99;
+        }else{
+            newData[props.count-1][j][i] = type;
         }
         let mCount = props.data.measures;
         props.setData({measures:mCount, notes:newData});
@@ -165,7 +174,7 @@ function Measure(props){
             if(noteType === 4) return (<Fragment><MNoteLineNone/><MNoteWhite/></Fragment>);
             if(noteType === 8) return (<Fragment><MNoteLineHalf/><MNote/></Fragment>);
             if(noteType === 16) return (<Fragment><MNoteLineHalf/><MNote/></Fragment>);
-            if(noteType === -1) return(<Fragment></Fragment>);
+            if(noteType === -99) return(<Fragment></Fragment>);
         }
         if(!isRightMost && noteType){
             if(noteType === 1) return (<Fragment><MNoteLine/><MNote/></Fragment>);
@@ -173,10 +182,10 @@ function Measure(props){
             if(noteType === 4) return (<Fragment><MNoteLineNone/><MNoteWhite/></Fragment>);
             if(noteType === 8) return (<Fragment><MNoteLine/><MNote/></Fragment>);
             if(noteType === 16) return (<Fragment><MNoteLine/><MNote/></Fragment>);
-            if(noteType === -1) return(<Fragment></Fragment>);
+            if(noteType === -99) return(<Fragment></Fragment>);
         }
         if(i < rightMost && !noteType){
-            if(stanzaNoteType === 4 || stanzaNoteType === -1) return(<Fragment></Fragment>);
+            if(stanzaNoteType === 4 || stanzaNoteType === -99) return(<Fragment></Fragment>);
             return (<Fragment><MNoteLine/></Fragment>);
         }
         return(<Fragment></Fragment>);

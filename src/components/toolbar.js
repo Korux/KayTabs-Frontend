@@ -94,6 +94,21 @@ const FaIcon = styled(FontAwesomeIcon)`
 `;
 
 const TBPMInput = styled.input`
+    border-radius : 5px;
+    background-color : rgb(230,230,230);
+    outline : none;
+    border : none;
+    margin : 0 10px;
+    color : rgb(40,40,40);
+    letter-spacing : .5px;
+    font-size : 16px;
+    font-weight : 500;
+    width : 5%;
+    text-align : center;
+
+    &:focus {
+        outline : 2px solid rgb(40,40,40);
+    }
 
 `;
 

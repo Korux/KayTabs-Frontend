@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileDownload, faTachometerAlt, faClock, faListOl } from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faTachometerAlt, faClock, faListOl } from '@fortawesome/free-solid-svg-icons';
 
 import { Link, useHistory } from 'react-router-dom';
 
@@ -141,7 +141,7 @@ function Tab(props){
                 <ImageContainer>
                     <TabImage src={props.data.image} alt="tabs"/>
                     <ImageDim>
-                    <DownloadIcon icon={faFileDownload} size={"3x"} onClick={() => history.push('/player/' + props.data._id)}/>
+                    <DownloadIcon icon={faPlayCircle} size={"3x"} onClick={() => history.push('/player/' + props.data._id)}/>
                     </ImageDim>
                 </ImageContainer>
 

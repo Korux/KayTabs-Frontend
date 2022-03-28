@@ -152,6 +152,14 @@ const PlayContainer = styled.div`
             background-color: rgb(120,120,120);
 
         }
+
+        &:disabled{
+            background-color: rgb(120,120,120);
+        }
+
+        &:disabled:hover{
+            background-color: rgb(120,120,120);
+        }
     }
 `;
 
@@ -213,7 +221,7 @@ function PlayerInfo(props){
                         <OtherInfo><OtherInfoIcon icon={faListOl} size={"lg"}/> : {props.data.measures}</OtherInfo>
                     </OverlayTrigger>
                     <PlayContainer>
-                        <button onClick={props.onPlay}>Play</button>
+                        <button disabled={props.playing} onClick={props.onPlay}>Play</button>
                     </PlayContainer>
                 </SongInfo>
 

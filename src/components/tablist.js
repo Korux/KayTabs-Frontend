@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import Tab from '../components/tab';
+import Loading from 'react-loading';
 
 import styled from 'styled-components';
 
@@ -17,6 +18,10 @@ const Error = styled.div`
     margin-top:150px;
 `;
 
+const TabsLoading = styled(Loading)`
+    margin : 150px auto;
+`;
+
 function TabList(props){
 
     function genTabs(){
@@ -24,7 +29,7 @@ function TabList(props){
         let tabInfo = props.data;
 
         if(tabInfo === null){
-            return(<Fragment></Fragment>);
+            return(<TabsLoading type={'spin'} color={'#DDDDDD'} height={'10%'} width={'10%'} />);
         }
         if(tabInfo.Error){
             return(<Error>

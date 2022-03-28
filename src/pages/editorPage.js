@@ -61,6 +61,8 @@ function KTabsEditor(){
     const [selectedNote, setSelectedNote] = React.useState(1);
     const [selectedMode, setSelectedMode] = React.useState("plus");
 
+    const [playing, setPlaying] = React.useState(false);
+
     const [toast, setToast] = React.useState('none');
     const [toastMsg, setToastMsg] = React.useState('');
 
@@ -72,7 +74,8 @@ function KTabsEditor(){
     const userCreds = useSelector(getUserCreds);
 
     useEffect(() => {
-        if(playLine[0] > 0){
+        let mounted = true;
+        if(playLine[0] > 0 && mounted){
             var currStanza = playLine.slice();
             var currLine = playLine[1][playLine[1].length - 1];
             var nextLine = currLine === 4 ? [playLine[0] + 1, 1] : [playLine[0], currLine + 1];
@@ -83,6 +86,16 @@ function KTabsEditor(){
             }else{
                 nextNoteType = tabData.notes[nextLine[0] - 1][4 - nextLine[1]];
                 nextNoteType = Math.max.apply(null, nextNoteType);
+                while(nextNoteType === 0){
+                    nextLine = nextLine[1] === 4 ? [nextLine[0] + 1, 1] : [nextLine[0], nextLine[1] + 1];
+                    if(nextLine[0] > tabData.measures){
+                        nextLine = [0,0];
+                        nextNoteType = 0;
+                        break;
+                    }
+                    nextNoteType = tabData.notes[nextLine[0] - 1][4 - nextLine[1]];
+                    nextNoteType = Math.max.apply(null, nextNoteType);
+                }
             }
 
             var newLine;
@@ -111,7 +124,10 @@ function KTabsEditor(){
             setTimeout(() => {
                 setPlayLine(newLine);
             }, Time);
+        }else{
+            setPlaying(false);
         }
+        return () => {mounted = false;};
     },[playLine]);
 
     function addMeasure(){
@@ -169,6 +185,14 @@ function KTabsEditor(){
         }else if(!loggedIn){
             setToast('err');
             setToastMsg('You are not logged in!');
+        }
+        else if(tabData.notes[0][3].reduce((a, b) => a + b, 0) === 0){
+            setToast('err');
+            setToastMsg("The first note of the first stanza must contain a note!");
+        }
+        else if(isNaN(parseInt(BPM,10))){
+            setToast('err');
+            setToastMsg("BPM cannot be empty!");
         }
         else{
             let reqData = {
@@ -237,7 +261,12 @@ function KTabsEditor(){
             setToastMsg("BPM cannot be empty.");
             return;
         }
-
+        if(tabData.notes[0][3].reduce((a, b) => a + b, 0) === 0){
+            setToast('err');
+            setToastMsg("The first note of the first stanza must contain a note.");
+            return;
+        }
+        setPlaying(true);
         if(tabData.notes[0][3].includes(1)){
             setPlayLine([1,[1]]);
         }
@@ -254,7 +283,7 @@ function KTabsEditor(){
             <ErrorToast onClose={() => setToast('none')} show={toast === 'err'} message={toastMsg}/>
             <SuccessToast onClose={() => setToast('none')} show={toast === 'succ'} message={toastMsg}/>
             <ToolBar mode={selectedMode} setMode={setSelectedMode} note={selectedNote} setNote={setSelectedNote} title={title} setTitle={setTitle} bpm={BPM} setBPM={validateAndSetBPM}/>
-            <EditorSideButtons onAdd={addMeasure} onRemove={removeMeasure} onClear={clearMeasure} onSave={saveTablature} onPlay={playTablature}/>
+            <EditorSideButtons onAdd={addMeasure} onRemove={removeMeasure} onClear={clearMeasure} onSave={saveTablature} onPlay={playTablature} playing={playing}/>
             <MeasureContainer>
             <MeasureEnd/>
                 {

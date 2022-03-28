@@ -4,6 +4,11 @@ import styled from 'styled-components';
 
 import Profile from '../components/profile';
 import globalVars from '../global';
+import Loading from 'react-loading';
+
+const ProfileLoading = styled(Loading)`
+    margin : 150px auto;
+`;
 
 function KTabsProfile(){
     const { id } = useParams();
@@ -13,18 +18,23 @@ function KTabsProfile(){
     const [tabType, setType] = React.useState("tabs");
 
     useEffect(() => {
+        let mounted = true;
         fetch(globalVars.server + '/users/' + id)
         .then(response => response.json())
         .then(data => {
-            setInfo(data);
+            if(mounted)setInfo(data);
         });
         if(profileInfo !== null){
             fetch(globalVars.server + '/tabs?search=' + profileInfo.name)
             .then(response => response.json())
             .then(data => {
-                setTabInfo(data);
+                if(mounted)setTabInfo(data);
             });
             setStarInfo([]);
+        }
+
+        return () => {
+            mounted = false;
         }
     },[id, profileInfo]);
 
@@ -34,7 +44,7 @@ function KTabsProfile(){
 
     function genProfile(){
         if(profileInfo === null){
-            return(<Fragment></Fragment>);
+            return(<ProfileLoading type={'spin'} color={'#DDDDDD'} height={'10%'} width={'10%'} />);
         }
         if(profileInfo.Error){
             const Error = styled.div`

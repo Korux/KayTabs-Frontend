@@ -99,7 +99,7 @@ function EditorSideButtons(props){
                         </Tooltip>
                     }
                     >
-                    <StyledButton onClick={props.onClear}>
+                    <StyledButton disabled={props.playing} onClick={props.onClear}>
                         <StyledIcon size={"lg"} icon={faUndoAlt}/>
                     </StyledButton>
                 </OverlayTrigger>
@@ -114,7 +114,7 @@ function EditorSideButtons(props){
                         </Tooltip>
                     }
                     >
-                    <StyledButton onClick={props.onAdd}>
+                    <StyledButton disabled={props.playing} onClick={props.onAdd}>
                         <StyledIcon size={"lg"} icon={faPlus}/>
                     </StyledButton>
                 </OverlayTrigger>
@@ -128,7 +128,7 @@ function EditorSideButtons(props){
                         </Tooltip>
                     }
                     >
-                    <StyledButton onClick={props.onRemove}>  
+                    <StyledButton disabled={props.playing} onClick={props.onRemove}>  
                         <StyledIcon size={"lg"} icon={faMinus}/>
                     </StyledButton>
                 </OverlayTrigger>
@@ -142,7 +142,7 @@ function EditorSideButtons(props){
                         </Tooltip>
                     }
                     >
-                    <StyledButton onClick={props.onPlay}>
+                    <StyledButton disabled={props.playing} onClick={props.onPlay}>
                         <StyledIconAlt size={"lg"} icon={faPlay}/>
                     </StyledButton>
                 </OverlayTrigger>

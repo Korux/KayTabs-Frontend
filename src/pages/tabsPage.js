@@ -16,7 +16,7 @@ function KTabsViewer(){
                 setInfo(data);
             });
         }
-    });
+    },[]);
 
     function updateTabs(query){
         fetch(globalVars.server + '/tabs?search=' + query)
