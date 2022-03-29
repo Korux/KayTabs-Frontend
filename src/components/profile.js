@@ -7,17 +7,22 @@ import { useSelector } from 'react-redux';
 import TabList from '../components/tablist';
 
 const ProfileContainer = styled.div`
-    width : max(40%,600px);
-    height : 400px;
+    width : max(30%,500px);
+
     background-color:rgb(100,100,100);
     margin:0 auto;
     margin-top:60px;
-    border-radius:50px;
+    border-radius:10px;
+    padding-bottom : 10px;
 `;
 
 const ProfileImgContainer = styled.div`
     width : 30%;
-
+    margin : 0 20px;
+    display : flex;
+    align-items : center;
+    justify-content : center;
+    flex-flow : column wrap;
 `;
 
 const ProfileImage = styled.img`
@@ -25,7 +30,7 @@ const ProfileImage = styled.img`
     border-radius : 50%;
     background-color:white;
     margin : 0 auto;
-    margin-top:80px;
+    margin-top:40px;
     object-fit : cover;
     width : 8rem;
     height : 8rem;
@@ -38,19 +43,93 @@ const ProfileInfoContainer = styled.div`
 
 `;
 
-const ProfileName = styled.div``;
+const ProfileName = styled.div`
+    font-size : 28px;
+    font-weight : 500;
+    margin : 20px 0 0 0;
+    text-align : left;
+    color : rgb(250,250,250);
+`;
 
-const ProfileInfo = styled.div``;
+const ProfileEmail = styled.div`
+    font-size : 16px;
+    font-weight : 400;
+    margin : 0 0 5px 0;
+    text-align : left;
+    color : rgb(200,200,200);
+`;
+
+const ProfileInfo = styled.div`
+    width : 100%;
+    display : flex;
+    align-items : center;
+    justify-content : center;
+    flex-flow : row wrap;
+
+`;
+
+const ProfileTabLabels = styled.div`
+    width : 80%;
+    text-align : left;
+    font-size : 14px;
+    font-weight : 500;
+    color : rgb(200,200,200);
+    padding-left : 20px;
+    padding-top : 10px;
+`;
+
+const ProfileTabNums = styled.div`
+    width : 20%;
+    text-align : left;
+    font-size : 14px;
+    font-weight : 500;
+    color : rgb(230,230,230);
+    padding-top : 10px;
+`;
+
+const ProfileDescription = styled.div`
+    background-color : rgb(50,50,50);
+    width : 90%;
+    height : 50%;
+    margin : 20px 0 0 0;
+    border-radius : .2rem;
+    padding : 10px;
+    text-align : left;
+`;
 
 const MainInfoContainer = styled.div`
     display : flex;
     justify-content:center;
     width : 100%;
-    height : 50%;
+ 
 
 `;
 
-const ButtonContainer = styled.div``;
+const ButtonContainer = styled.div`
+    width : 70%;
+    margin : 10px auto;
+    display : flex;
+    align-items : center;
+    justify-content : center;
+`;
+
+const StyledButton = styled.button`
+    width : 30%;
+    margin : auto;
+    font-weight : 500;
+    font-size : 16px;
+    letter-spacing : 1px;
+    color : ${({active}) => active ? 'rgb(240,240,240)' : 'rgba(150,150,150,0.7)' };
+    border : 1px solid ${({active}) => active ? 'rgb(150,150,250)' : 'rgb(150,150,150)' };
+    background-color : ${({active}) => active ? 'rgb(70,70,220)' : 'rgba(0,0,0,0)' };
+    padding : 5px 10px 5px 10px;
+    text-align : center;
+    transition : all 0.2s ease-in-out;
+    &:hover{
+        color : ${({active}) => active ? 'rgb(240,240,240)' : 'rgba(190,190,190,0.7)' };
+        border : 1px solid ${({active}) => active ? 'rgb(150,150,250)' : 'rgb(190,190,190)' };
+    }
+`;
 
 function Profile(props){
 
@@ -66,25 +145,30 @@ function Profile(props){
 
                     <ProfileImgContainer>
                         <ProfileImage src={props.data.image} alt="pfp"/>
+                        <ProfileInfo>
+                            <ProfileTabLabels>
+                            Created Tabs:<br/>
+                            Starred Tabs:
+                            </ProfileTabLabels>
+                            <ProfileTabNums>
+                            {props.data.tabs.length}<br/>
+                            {props.data.starred.length}
+                            </ProfileTabNums>
+                        </ProfileInfo>
                     </ProfileImgContainer>
                     <ProfileInfoContainer>
                         <ProfileName>{props.data.name}</ProfileName>
-                        <ProfileInfo>
-                        email:{props.data.email}<br/>
-                        no. tabs:{props.data.tabs.length}<br/>
-                        no. starred:{props.data.starred.length}<br/>
-                        </ProfileInfo>
+                        <ProfileEmail>{props.data.email}</ProfileEmail>
+                        <ProfileDescription>{props.data.description}</ProfileDescription>
                     </ProfileInfoContainer>
 
                 </MainInfoContainer>
-
-                description:{props.data.description}<br/>
-                is my page:{props.data._id === userInfo.id ? "TRUE" : "FALSE"}<br/>
+                {/* is my page:{props.data._id === userInfo.id ? "TRUE" : "FALSE"}<br/> */}
 
                 <ButtonContainer>
 
-                    <button onClick={() => props.setTabs("tabs")}>Tabs</button>
-                    <button onClick={() => props.setTabs("starred")}>Starred</button>
+                    <StyledButton active={props.active === 'tabs'} onClick={() => props.setTabs("tabs")}>Tabs</StyledButton>
+                    <StyledButton active={props.active === 'starred'} onClick={() => props.setTabs("starred")}>Starred</StyledButton>
 
                 </ButtonContainer>
             

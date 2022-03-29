@@ -19,11 +19,13 @@ function KTabsProfile(){
 
     useEffect(() => {
         let mounted = true;
-        fetch(globalVars.server + '/users/' + id)
-        .then(response => response.json())
-        .then(data => {
-            if(mounted)setInfo(data);
-        });
+        if(profileInfo === null){
+            fetch(globalVars.server + '/users/' + id)
+            .then(response => response.json())
+            .then(data => {
+                if(mounted)setInfo(data);
+            });
+        }
         if(profileInfo !== null){
             fetch(globalVars.server + '/tabs?search=' + profileInfo.name)
             .then(response => response.json())
@@ -55,7 +57,7 @@ function KTabsProfile(){
                 <span>Could not find the given user. Please try again later. (｡•́︿•̀｡)</span>
             </Error>);
         }
-        return(<Profile data={profileInfo} tabData={tabType === "tabs" ? tabInfo : starInfo} setTabs={setTabs}/>);
+        return(<Profile data={profileInfo} active={tabType} tabData={tabType === "tabs" ? tabInfo : starInfo} setTabs={setTabs}/>);
     }
 
     return(
