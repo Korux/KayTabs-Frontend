@@ -6,6 +6,9 @@ import { useSelector } from 'react-redux';
 
 import TabList from '../components/tablist';
 
+import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 const ProfileContainer = styled.div`
     width : max(30%,500px);
 
@@ -95,6 +98,7 @@ const ProfileDescription = styled.div`
     border-radius : .2rem;
     padding : 10px;
     text-align : left;
+    color : rgb(230,230,230);
 `;
 
 const MainInfoContainer = styled.div`
@@ -112,6 +116,22 @@ const ButtonContainer = styled.div`
     align-items : center;
     justify-content : center;
 `;
+
+const EditIcon = styled(FontAwesomeIcon)`
+    font-size : 14px;
+    margin : 0 20px;
+    vertical-align : middle;
+    cursor : pointer;
+`;
+
+const EditProfileIcon = styled(FontAwesomeIcon)`
+    font-size : 10px;
+    margin : 0 5px;
+    vertical-align : middle;
+    cursor : pointer;
+    color : rgb(170,170,170);
+`;
+
 
 const StyledButton = styled.button`
     width : 30%;
@@ -157,9 +177,9 @@ function Profile(props){
                         </ProfileInfo>
                     </ProfileImgContainer>
                     <ProfileInfoContainer>
-                        <ProfileName>{props.data.name}</ProfileName>
+                        <ProfileName>{props.data.name}<EditIcon size={"2xs"} onClick = {()=> console.log("sss")} icon={faPen}/></ProfileName>
                         <ProfileEmail>{props.data.email}</ProfileEmail>
-                        <ProfileDescription>{props.data.description}</ProfileDescription>
+                        <ProfileDescription>{props.data.description}<EditProfileIcon size={"2xs"} onClick = {()=> console.log("sss")} icon={faPen}/></ProfileDescription>
                     </ProfileInfoContainer>
 
                 </MainInfoContainer>
@@ -174,7 +194,7 @@ function Profile(props){
             
             </ProfileContainer>
 
-            <TabList data={props.tabData}/>
+            <TabList nostar={true} data={props.tabData}/>
         </Fragment>
 
     );

@@ -201,7 +201,7 @@ function KTabsEditor(){
                 title : title,
                 owner : userCreds.id,
                 ownername : userCreds.name,
-                bpm : 80,
+                bpm : parseInt(BPM,10),
                 length : ((tabData.measures * 4) / 80) * 60,
                 image : "https://i.ibb.co/v1zFkYx/chrome-to-Mgt0-SVds.png"
             };

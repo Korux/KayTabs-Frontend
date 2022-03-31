@@ -14,7 +14,7 @@ function KTabsProfile(){
     const { id } = useParams();
     const [profileInfo, setInfo] = React.useState(null);
     const [tabInfo, setTabInfo] = React.useState(null);
-    const [starInfo, setStarInfo] = React.useState([]);
+    const [starInfo, setStarInfo] = React.useState(null);
     const [tabType, setType] = React.useState("tabs");
 
     useEffect(() => {
@@ -32,7 +32,20 @@ function KTabsProfile(){
             .then(data => {
                 if(mounted)setTabInfo(data);
             });
-            setStarInfo([]);
+            if(profileInfo.starred.length > 0){
+                let queryBuilder = "";
+                profileInfo.starred.forEach(element => {
+                    queryBuilder = queryBuilder + 'star=' + element + "&"
+                });
+                queryBuilder = queryBuilder.slice(0, -1);
+                fetch(globalVars.server + '/tabs?' + queryBuilder )
+                .then(response => response.json())
+                .then(data => {
+                    if(mounted)setStarInfo(data);
+                });
+            }else{
+                setStarInfo([]);
+            }
         }
 
         return () => {

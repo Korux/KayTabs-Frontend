@@ -1,9 +1,15 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown,faTachometerAlt, faClock, faListOl} from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown,faTachometerAlt, faClock, faListOl, faStar} from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+
+import { getUserCreds } from '../redux/selectors';
+import { useSelector } from 'react-redux';
+
+
+import globalVars from '../global';
 
 const StyledButton = styled.button`
     background-color: rgb(80,80,80);
@@ -71,7 +77,7 @@ const InfoContainer = styled.div`
     position:fixed;
     right:0;
     top:15%;
-    width:25%;
+    width:max(25%,400px);
     height:55%;
     z-index:999;
 `;
@@ -90,12 +96,18 @@ const SongInfo = styled.div`
     border-bottom-left-radius:20px;
 `;
 
+const SongTitleContainer = styled.div`
+    margin-left:15px;
+    display : flex;
+    justify-content : flex-start;
+    align-items : center;
+`;
+
 const SongTitle = styled.div`
     font-size:34px;
     font-weight:600;
     text-align:left !important;
-    margin-left:10px;
-
+    margin-right : 10px;
 `;
 
 const SongAuthor = styled.div`
@@ -111,7 +123,6 @@ const SongAuthorLink = styled(Link)`
 `;
 
 const OtherInfo = styled.span`
-    width:
     text-align:right !important;
     padding:0 30px;
     font-size:18px;
@@ -163,7 +174,28 @@ const PlayContainer = styled.div`
     }
 `;
 
+const StarIcon = styled(FontAwesomeIcon)`
+    transition : all 0.1s ease-in-out;
+    cursor : pointer;
+    color : ${({starred}) => starred === 'true' ? 'rgb(255,255,102)' : 'rgb(200,200,200)'}
+`;
+
 function PlayerInfo(props){
+
+    var userInfo = useSelector(getUserCreds);
+    const [userStarred, setStarred] = React.useState(null);
+
+    useEffect(() => {
+        let mounted = true;
+        if(mounted && userInfo.id){
+            fetch(globalVars.server + '/users/' + userInfo.id)
+            .then(response => response.json())
+            .then(data => {
+                if(mounted)setStarred(data.starred);
+            });
+        }
+    },[userInfo]);
+
 
     function secsToTime(time){
         let mins = 0;
@@ -175,12 +207,54 @@ function PlayerInfo(props){
         return mins + ":" + (secs < 10 ? '0' + secs : secs);
     }
 
+    function starClick(){
+        let starred = userStarred!==null && userStarred.includes(props.data._id);
+        if(starred){
+            let reqPutOpts = {
+                method : 'DELETE',
+                headers : {
+                    'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({type:"star"}),
+            }
+            fetch(globalVars.server + '/users/' + userInfo.id + '/tabs/' + props.data._id, reqPutOpts)
+            .then(response => response.json())
+            .then(data => {
+                if(!data.Error){
+                    let newStar = userStarred.slice();
+                    newStar = newStar.filter(val => val !== props.data._id);
+                    setStarred(newStar);
+                }
+            });
+        }else{
+            let reqPutOpts = {
+                method : 'PUT',
+                headers : {
+                    'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({type:"star"}),
+            }
+            fetch(globalVars.server + '/users/' + userInfo.id + '/tabs/' + props.data._id, reqPutOpts)
+            .then(response => response.json())
+            .then(data => {
+                if(!data.Error){
+                    let newStar = userStarred.slice();
+                    newStar.push(props.data._id);
+                    setStarred(newStar);
+                }
+            });
+        }
+    }
+
     return(
         <Fragment>
             <InfoContainer>
                 <StyledImage src={props.data.image}/> 
                 <SongInfo>
-                    <SongTitle>{props.data.title}</SongTitle>
+                    <SongTitleContainer>
+                        <SongTitle>{props.data.title}</SongTitle>
+                        {userInfo.loggedin && !props.nostar && <StarIcon icon={faStar} size={"1x"} onClick={starClick} starred={userStarred!==null && userStarred.includes(props.data._id) ? 'true' : 'false'}/>}
+                    </SongTitleContainer>
                     <SongAuthor>
                         created by: <SongAuthorLink to={"/profile/" + props.data.owner}>{props.data.ownername}</SongAuthorLink>
                     </SongAuthor>

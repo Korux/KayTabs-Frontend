@@ -43,9 +43,14 @@ export const GlobalStyles = createGlobalStyle`
   }
 `
 
+// const globalVars = {
+//   server : 'https://kaytabs.herokuapp.com',
+//   url : 'https://korux.github.io/kaytabs'
+// }
+
 const globalVars = {
-  server : 'https://kaytabs.herokuapp.com',
-  url : 'https://korux.github.io/kaytabs'
+  server : 'http://localhost:3000',
+  url : 'http://localhost:3001'
 }
 
 export default globalVars;

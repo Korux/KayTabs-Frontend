@@ -58,19 +58,19 @@ function TabList(props){
             <TabContainer>
                 <TabColumn>
                     {col1.map((tab,i) => {
-                        return(<Tab key={"col1" + i} data={tab}/>)
+                        return(<Tab nostar={props.nostar} key={"col1" + i} data={tab}/>)
                     })}
                 </TabColumn>
 
                 <TabColumn>
                     {col2.map((tab,i) => {
-                        return(<Tab key={"col2" + i} data={tab}/>)
+                        return(<Tab nostar={props.nostar} key={"col2" + i} data={tab}/>)
                     })}
                 </TabColumn>
 
                 <TabColumn>
                     {col3.map((tab,i) => {
-                        return(<Tab key={"col3" + i} data={tab}/>)
+                        return(<Tab nostar={props.nostar} key={"col3" + i} data={tab}/>)
                     })}
                 </TabColumn>
 

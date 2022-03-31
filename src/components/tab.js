@@ -1,10 +1,14 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlayCircle, faTachometerAlt, faClock, faListOl } from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faTachometerAlt, faClock, faListOl, faStar } from '@fortawesome/free-solid-svg-icons';
 
 import { Link, useHistory } from 'react-router-dom';
+import { getUserCreds } from '../redux/selectors';
+import { useSelector } from 'react-redux';
+
+import globalVars from '../global';
 
 const TabContainer = styled.div`
     width : 95%;
@@ -120,10 +124,32 @@ const SongAuthorLink = styled(Link)`
 
 `;
 
+const StarIcon = styled(FontAwesomeIcon)`
+    transition : all 0.1s ease-in-out;
+    position : absolute;
+    bottom : 15px;
+    right : 15px;
+    cursor : pointer;
+    color : ${({starred}) => starred === 'true' ? 'rgb(255,255,102)' : 'rgb(200,200,200)'}
+`;
+
 
 function Tab(props){
 
     const history = useHistory();
+    var userInfo = useSelector(getUserCreds);
+    const [userStarred, setStarred] = React.useState(null);
+
+    useEffect(() => {
+        let mounted = true;
+        if(mounted && userInfo.id){
+            fetch(globalVars.server + '/users/' + userInfo.id)
+            .then(response => response.json())
+            .then(data => {
+                if(mounted)setStarred(data.starred);
+            });
+        }
+    },[userInfo]);
 
     function secsToTime(time){
         let mins = 0;
@@ -135,6 +161,45 @@ function Tab(props){
         return mins + ":" + (secs < 10 ? '0' + secs : secs);
     }
 
+    function starClick(){
+        let starred = userStarred!==null && userStarred.includes(props.data._id);
+        if(starred){
+            let reqPutOpts = {
+                method : 'DELETE',
+                headers : {
+                    'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({type:"star"}),
+            }
+            fetch(globalVars.server + '/users/' + userInfo.id + '/tabs/' + props.data._id, reqPutOpts)
+            .then(response => response.json())
+            .then(data => {
+                if(!data.Error){
+                    let newStar = userStarred.slice();
+                    newStar = newStar.filter(val => val !== props.data._id);
+                    setStarred(newStar);
+                }
+            });
+        }else{
+            let reqPutOpts = {
+                method : 'PUT',
+                headers : {
+                    'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({type:"star"}),
+            }
+            fetch(globalVars.server + '/users/' + userInfo.id + '/tabs/' + props.data._id, reqPutOpts)
+            .then(response => response.json())
+            .then(data => {
+                if(!data.Error){
+                    let newStar = userStarred.slice();
+                    newStar.push(props.data._id);
+                    setStarred(newStar);
+                }
+            });
+        }
+    }
+
     return(
         <Fragment>
             <TabContainer>
@@ -142,6 +207,7 @@ function Tab(props){
                     <TabImage src={props.data.image} alt="tabs"/>
                     <ImageDim>
                     <DownloadIcon icon={faPlayCircle} size={"3x"} onClick={() => history.push('/player/' + props.data._id)}/>
+                    {userInfo.loggedin && !props.nostar && <StarIcon icon={faStar} size={"1x"} onClick={starClick} starred={userStarred!==null && userStarred.includes(props.data._id) ? 'true' : 'false'}/>}
                     </ImageDim>
                 </ImageContainer>
 
