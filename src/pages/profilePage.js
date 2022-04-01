@@ -27,25 +27,19 @@ function KTabsProfile(){
             });
         }
         if(profileInfo !== null){
-            fetch(globalVars.server + '/tabs?search=' + profileInfo.name)
+
+            fetch(globalVars.server + '/users/' + id + '/tabs')
             .then(response => response.json())
             .then(data => {
                 if(mounted)setTabInfo(data);
             });
-            if(profileInfo.starred.length > 0){
-                let queryBuilder = "";
-                profileInfo.starred.forEach(element => {
-                    queryBuilder = queryBuilder + 'star=' + element + "&"
-                });
-                queryBuilder = queryBuilder.slice(0, -1);
-                fetch(globalVars.server + '/tabs?' + queryBuilder )
-                .then(response => response.json())
-                .then(data => {
-                    if(mounted)setStarInfo(data);
-                });
-            }else{
-                setStarInfo([]);
-            }
+
+            fetch(globalVars.server + '/users/' + id + '/starred' )
+            .then(response => response.json())
+            .then(data => {
+                if(mounted)setStarInfo(data);
+            });
+            
         }
 
         return () => {

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { createRef, Fragment, useEffect } from 'react'
 import styled from 'styled-components';
 
 const MBlock = styled.div`
@@ -118,6 +118,28 @@ const MNoteWhite = styled.span`
 
 function Measure(props){
 
+    const [measureRefs, setMeasureRefs] = React.useState([]);
+
+    useEffect(() => {
+        // add or remove refs
+        setMeasureRefs((measureRefs) =>
+        Array(4)
+        .fill()
+        .map((_, i) => measureRefs[i] || createRef()),
+        );
+      }, []);
+
+      useEffect(() => {
+        if(props.active[0] === props.count){
+            let currLine = 4 - props.active[1][0];
+          measureRefs[currLine].current.scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+        });
+        }
+      },[props.active]);
+
     function addNote(i,j,type){
         let newData = props.data.notes.slice();
         if(newData[props.count-1][j][i] !== 0) return;
@@ -222,7 +244,7 @@ function Measure(props){
         <Fragment>
             {
             [...Array(4),].map((val,j) => (
-                <MLine key={j}>
+                <MLine ref={measureRefs[j]} key={j}>
                     <MNoteEnd>{genNoteEnd(j)}</MNoteEnd>
                     {[...Array(17),].map((val,i) => (
                         <MBlock i={i+1} j={j+1} key={i * (j+1)} type={props.type} onClick={ props.mode === "plus" ?  () => addNote(i,j, props.notetype) : () => removeNote(i,j)}>
