@@ -2,13 +2,14 @@ import React, { Fragment, useEffect } from 'react'
 import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlayCircle, faTachometerAlt, faClock, faListOl, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faTachometerAlt, faClock, faListOl, faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { Link, useHistory } from 'react-router-dom';
 import { getUserCreds } from '../redux/selectors';
 import { useSelector } from 'react-redux';
 
 import globalVars from '../global';
+import { SuccessToast, ErrorToast } from './toast';
 
 const TabContainer = styled.div`
     width : 95%;
@@ -133,12 +134,22 @@ const StarIcon = styled(FontAwesomeIcon)`
     color : ${({starred}) => starred === 'true' ? 'rgb(255,255,102)' : 'rgb(200,200,200)'}
 `;
 
+const DeleteIcon = styled(FontAwesomeIcon)`
+    position : absolute;
+    bottom : 15px;
+    right : 15px;
+    cursor : pointer;
+    color : rgb(230,230,230);
+`;
 
 function Tab(props){
 
     const history = useHistory();
     var userInfo = useSelector(getUserCreds);
     const [userStarred, setStarred] = React.useState(null);
+
+    const [toast, setToast] = React.useState('none');
+    const [toastMsg, setToastMsg] = React.useState('');
 
     useEffect(() => {
         let mounted = true;
@@ -178,6 +189,7 @@ function Tab(props){
                     let newStar = userStarred.slice();
                     newStar = newStar.filter(val => val !== props.data._id);
                     setStarred(newStar);
+                    if(props.onUpdate)props.onUpdate();
                 }
             });
         }else{
@@ -200,14 +212,44 @@ function Tab(props){
         }
     }
 
+    function deleteClick(){
+        let reqOpts = {
+            method : 'DELETE',
+        }
+        let delTabPromise = fetch(globalVars.server + '/tabs/' + props.data._id, reqOpts);
+        let reqOptsUsr = {
+            method : 'DELETE',
+            headers : {
+                'Content-Type': 'application/json',
+            },
+            body : JSON.stringify({type:"tab"}),
+        }
+        let delFromUsrPromise = fetch(globalVars.server + '/users/' + userInfo.id + '/tabs/' + props.data._id, reqOptsUsr);
+        Promise.all([delTabPromise,delFromUsrPromise])
+        .then(results => {
+            if(!results[0].Error && !results[1].Error){
+                setToast('succ');
+                setToastMsg('Song successfully deleted.');
+                
+            }else{
+                setToast('err');
+                setToastMsg('Error occured when deleting song. please try again later.');
+            }
+
+        });
+    }
+
     return(
         <Fragment>
+            <SuccessToast onClose={() => {setToast('none');props.onUpdate();}} show={toast === 'succ'} message={toastMsg}/>
+            <ErrorToast onClose={() => setToast('none')} show={toast === 'err'} message={toastMsg}/>
             <TabContainer>
                 <ImageContainer>
                     <TabImage src={props.data.image} alt="tabs"/>
                     <ImageDim>
                     <DownloadIcon icon={faPlayCircle} size={"3x"} onClick={() => history.push('/player/' + props.data._id)}/>
                     {userInfo.loggedin && !props.nostar && <StarIcon icon={faStar} size={"1x"} onClick={starClick} starred={userStarred!==null && userStarred.includes(props.data._id) ? 'true' : 'false'}/>}
+                    {userInfo.loggedin && !props.nodelete && <DeleteIcon icon={faTrash} size={"1x"} onClick={deleteClick} />}
                     </ImageDim>
                 </ImageContainer>
 

@@ -171,8 +171,8 @@ function Profile(props){
                             Starred Tabs:
                             </ProfileTabLabels>
                             <ProfileTabNums>
-                            {props.data.tabs.length}<br/>
-                            {props.data.starred.length}
+                            {props.tabs !== null && props.tabs.length}<br/>
+                            {props.starred !== null && props.starred.length}
                             </ProfileTabNums>
                         </ProfileInfo>
                     </ProfileImgContainer>
@@ -194,7 +194,7 @@ function Profile(props){
             
             </ProfileContainer>
 
-            <TabList nostar={true} data={props.tabData}/>
+            <TabList onUpdate={props.onUpdate} nostar={props.active === 'tabs' || props.data._id !== userInfo.id} nodelete={props.active === 'starred' || props.data._id !== userInfo.id} data={props.active === 'tabs' ? props.tabs : props.starred}/>
         </Fragment>
 
     );

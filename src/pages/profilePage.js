@@ -10,12 +10,15 @@ const ProfileLoading = styled(Loading)`
     margin : 150px auto;
 `;
 
+
 function KTabsProfile(){
     const { id } = useParams();
     const [profileInfo, setInfo] = React.useState(null);
     const [tabInfo, setTabInfo] = React.useState(null);
     const [starInfo, setStarInfo] = React.useState(null);
     const [tabType, setType] = React.useState("tabs");
+    const [value, setValue] = React.useState(0);
+
 
     useEffect(() => {
         let mounted = true;
@@ -37,7 +40,7 @@ function KTabsProfile(){
             fetch(globalVars.server + '/users/' + id + '/starred' )
             .then(response => response.json())
             .then(data => {
-                if(mounted)setStarInfo(data);
+                if(mounted)setStarInfo(data);         
             });
             
         }
@@ -45,7 +48,7 @@ function KTabsProfile(){
         return () => {
             mounted = false;
         }
-    },[id, profileInfo]);
+    },[id, profileInfo, value]);
 
     function setTabs(type){
         setType(type);
@@ -64,7 +67,7 @@ function KTabsProfile(){
                 <span>Could not find the given user. Please try again later. (｡•́︿•̀｡)</span>
             </Error>);
         }
-        return(<Profile data={profileInfo} active={tabType} tabData={tabType === "tabs" ? tabInfo : starInfo} setTabs={setTabs}/>);
+        return(<Profile onUpdate={() => setValue(value=>value+1)} data={profileInfo} active={tabType} tabs={tabInfo} starred={starInfo} setTabs={setTabs}/>);
     }
 
     return(

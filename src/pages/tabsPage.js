@@ -29,7 +29,7 @@ function KTabsViewer(){
     return(
         <Fragment>
             <SearchFilter onSearch={updateTabs}/>
-            <TabList nostar={false} data={tabInfo}/>
+            <TabList nostar={false} nodelete={true} data={tabInfo}/>
         </Fragment>
     );
 
