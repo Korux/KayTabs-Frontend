@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import styled from 'styled-components';
 
 import { getUserCreds } from '../redux/selectors';
@@ -6,8 +6,11 @@ import { useSelector } from 'react-redux';
 
 import TabList from '../components/tablist';
 
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faCheck, faTimes} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import globalVars from '../global';
+import { ErrorToast, SuccessToast } from './toast';
 
 const ProfileContainer = styled.div`
     width : max(30%,500px);
@@ -52,6 +55,23 @@ const ProfileName = styled.div`
     margin : 20px 0 0 0;
     text-align : left;
     color : rgb(250,250,250);
+    display : flex;
+    align-items:center;
+`;
+
+const NameEditable = styled.input`
+    width : 90%;
+    font-size : 28px;
+    font-weight : 500;
+    color : rgb(250,250,250);
+    background-color : rgb(100,100,100);
+    border : none;
+    border-bottom : 1px solid rgb(30,30,30);
+    transition : all 0.1s ease-in-out;
+    &:focus{
+        border-bottom : 1px solid rgb(220,220,220);
+        outline : none;
+    }
 `;
 
 const ProfileEmail = styled.div`
@@ -101,6 +121,10 @@ const ProfileDescription = styled.div`
     color : rgb(230,230,230);
 `;
 
+const DescriptionEditable = styled.input`
+
+`;
+
 const MainInfoContainer = styled.div`
     display : flex;
     justify-content:center;
@@ -120,7 +144,6 @@ const ButtonContainer = styled.div`
 const EditIcon = styled(FontAwesomeIcon)`
     font-size : 14px;
     margin : 0 20px;
-    vertical-align : middle;
     cursor : pointer;
 `;
 
@@ -131,6 +154,25 @@ const EditProfileIcon = styled(FontAwesomeIcon)`
     cursor : pointer;
     color : rgb(170,170,170);
 `;
+
+const EditButton = styled.button`
+    background-color : rgb(220,220,220);
+    cursor : pointer;
+    margin : 0 10px;
+    width : 30px;
+    height : 1.9rem;
+    border : none;
+    border-radius : 3px;
+    display : flex;
+    justify-content : center;
+    align-items : center;
+`;
+
+const EditButtonIcon = styled(FontAwesomeIcon)`
+    font-size : 20px;
+    color : rgb(50,50,50);
+`;
+
 
 
 const StyledButton = styled.button`
@@ -155,10 +197,79 @@ function Profile(props){
 
 
     const userInfo = useSelector(getUserCreds);
+    const [nameEditing, setNameEditing] = useState(false);
+    const [descEditing, setDescEditing] = useState(false);
+    const [name, setName] = useState(props.data.name);
+    const [tmpName, setTmpName] = useState(props.data.name);
+    const [desc, setDesc] = useState(props.data.description);
+    const [tmpDesc, setTmpDesc] = useState(props.data.description);
+
+    const [toast, setToast] = React.useState('none');
+    const [toastMsg, setToastMsg] = React.useState('');
+
+    const nameEditCancel = () => {
+        setTmpName(name);
+        setNameEditing(false);
+    };
+
+    const nameEditSave = () => {
+        let reqOpts = {
+            method : 'PATCH',
+            headers : {
+                'Content-Type': 'application/json',
+            },
+            body : JSON.stringify({name:tmpName, desc:tmpDesc}),
+        }
+
+        fetch( globalVars.server + '/users/' + props.data._id, reqOpts)
+        .then(response => response.json())
+        .then(data =>{
+            if(data.Error){
+                setToast('err');
+                setToastMsg("Error saving profile data. Please try again later.");
+            }else{
+                setName(tmpName);
+                setNameEditing(false);
+                setToast('succ');
+                setToastMsg("Profile info saved.")
+            }
+        });
+    };
+
+    const descEditCancel = () => {
+        setTmpDesc(desc);
+        setDescEditing(false);
+    };
+
+    const descEditSave = () => {
+        let reqOpts = {
+            method : 'PATCH',
+            headers : {
+                'Content-Type': 'application/json',
+            },
+            body : JSON.stringify({name:tmpName, desc:tmpDesc}),
+        }
+
+        fetch( globalVars.server + '/users/' + props.data._id, reqOpts)
+        .then(response => response.json())
+        .then(data =>{
+            if(data.Error){
+                setToast('err');
+                setToastMsg("Error saving profile data. Please try again later.");
+            }else{
+                setDesc(tmpDesc);
+                setDescEditing(false);
+                setToast('succ');
+                setToastMsg("Profile info saved.")
+            }
+        });
+    };
 
     return(
       
         <Fragment>
+            <ErrorToast onClose={() => setToast('none')} show={toast === 'err'} message={toastMsg}/>
+            <SuccessToast onClose={() => setToast('none')} show={toast === 'succ'} message={toastMsg}/>
             <ProfileContainer>
 
                 <MainInfoContainer>
@@ -177,13 +288,28 @@ function Profile(props){
                         </ProfileInfo>
                     </ProfileImgContainer>
                     <ProfileInfoContainer>
-                        <ProfileName>{props.data.name}<EditIcon size={"2xs"} onClick = {()=> console.log("sss")} icon={faPen}/></ProfileName>
+                        <ProfileName>
+                            {nameEditing && <NameEditable value={tmpName} onChange={(e) => setTmpName(e.target.value)}/>}
+                            {nameEditing && <EditButton><EditButtonIcon size={"lg"} icon={faCheck} onClick={nameEditSave}/></EditButton>}
+                            {nameEditing && <EditButton><EditButtonIcon size={"lg"} icon={faTimes} onClick={nameEditCancel}/></EditButton>}
+                            {!nameEditing && name}
+                            {props.data._id === userInfo.id && !nameEditing &&
+                                <EditIcon size={"2xs"} onClick = {() => setNameEditing(true)} icon={faPen}/>
+                            }
+                        </ProfileName>
                         <ProfileEmail>{props.data.email}</ProfileEmail>
-                        <ProfileDescription>{props.data.description}<EditProfileIcon size={"2xs"} onClick = {()=> console.log("sss")} icon={faPen}/></ProfileDescription>
+                        <ProfileDescription>
+                            {descEditing && <DescriptionEditable value={tmpDesc} onChange={(e) => setTmpDesc(e.target.value)}/>}
+                            {descEditing && <EditButton><EditButtonIcon size={"lg"} icon={faCheck} onClick={descEditSave}/></EditButton>}
+                            {descEditing && <EditButton><EditButtonIcon size={"lg"} icon={faTimes} onClick={descEditCancel}/></EditButton>}
+                            {!descEditing && desc}
+                            {props.data._id === userInfo.id && !descEditing &&
+                                <EditProfileIcon size={"2xs"} onClick = {() => setDescEditing(true)} icon={faPen}/>
+                            }
+                        </ProfileDescription>
                     </ProfileInfoContainer>
 
                 </MainInfoContainer>
-                {/* is my page:{props.data._id === userInfo.id ? "TRUE" : "FALSE"}<br/> */}
 
                 <ButtonContainer>
 
