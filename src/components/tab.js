@@ -154,7 +154,7 @@ function Tab(props){
     const [onwerName, setOwnerName] = React.useState('-');
 
 
-    //componentdidmount, get tab owner name
+    //get tab owner name
     useEffect(() => {
         let mounted = true;
         fetch(globalVars.server + '/users/' + props.data.owner)
@@ -166,7 +166,7 @@ function Tab(props){
             mounted = false;
         }
 
-    },[]);
+    },[props.data]);
 
     useEffect(() => {
         let mounted = true;

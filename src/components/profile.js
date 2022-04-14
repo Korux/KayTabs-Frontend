@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components';
 
 import { getUserCreds } from '../redux/selectors';
@@ -219,6 +219,14 @@ function Profile(props){
 
     const [toast, setToast] = React.useState('none');
     const [toastMsg, setToastMsg] = React.useState('');
+
+    //reload user info on data change
+    useEffect(() => {
+        setName(props.data.name);
+        setTmpName(props.data.name);
+        setDesc(props.data.description);
+        setTmpDesc(props.data.description);
+    },[props.data]);
 
     const editCancel = () => {
         setTmpName(name);
