@@ -185,6 +185,24 @@ function PlayerInfo(props){
     var userInfo = useSelector(getUserCreds);
     const [userStarred, setStarred] = React.useState(null);
 
+    
+    const [onwerName, setOwnerName] = React.useState('-');
+
+
+    //componentdidmount, get tab owner name
+    useEffect(() => {
+        let mounted = true;
+        fetch(globalVars.server + '/users/' + props.data.owner)
+        .then(response => response.json())
+        .then(data => {
+            if(mounted)setOwnerName(data.name);
+        });
+        return () => {
+            mounted = false;
+        }
+
+    },[]);
+
     useEffect(() => {
         let mounted = true;
         if(mounted && userInfo.id){
@@ -256,7 +274,7 @@ function PlayerInfo(props){
                         {userInfo.loggedin && !props.nostar && <StarIcon icon={faStar} size={"1x"} onClick={starClick} starred={userStarred!==null && userStarred.includes(props.data._id) ? 'true' : 'false'}/>}
                     </SongTitleContainer>
                     <SongAuthor>
-                        created by: <SongAuthorLink to={"/profile/" + props.data.owner}>{props.data.ownername}</SongAuthorLink>
+                        created by: <SongAuthorLink to={"/profile/" + props.data.owner}>{onwerName}</SongAuthorLink>
                     </SongAuthor>
 
                     <OverlayTrigger

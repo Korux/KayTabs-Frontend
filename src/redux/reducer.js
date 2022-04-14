@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 
 import {
+    SET_USER_DESCRIPTION,
+    SET_USER_NAME,
     USER_LOGIN,
     USER_LOGOUT,
 } from './actions.js';
@@ -25,6 +27,16 @@ function userReducer(state=guestState, action){
             };
         case USER_LOGOUT:
             return guestState;
+        case SET_USER_NAME:
+            return {
+                ...state,
+                name : action.name
+            }
+        case SET_USER_DESCRIPTION:
+            return {
+                ...state,
+                description : action.desc
+            }
         default:
             return state;
     }

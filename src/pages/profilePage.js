@@ -20,15 +20,9 @@ function KTabsProfile(){
     const [value, setValue] = React.useState(0);
 
 
+    //load tab data when profile info changes
     useEffect(() => {
         let mounted = true;
-        if(profileInfo === null){
-            fetch(globalVars.server + '/users/' + id)
-            .then(response => response.json())
-            .then(data => {
-                if(mounted)setInfo(data);
-            });
-        }
         if(profileInfo !== null){
 
             fetch(globalVars.server + '/users/' + id + '/tabs')
@@ -48,7 +42,21 @@ function KTabsProfile(){
         return () => {
             mounted = false;
         }
-    },[id, profileInfo, value]);
+    },[profileInfo]);
+
+    // get new profile info on id change or value update
+
+    useEffect(() => {
+        let mounted = true;
+        fetch(globalVars.server + '/users/' + id)
+        .then(response => response.json())
+        .then(data => {
+            if(mounted)setInfo(data);
+        });
+        return () => {
+            mounted = false;
+        }
+    },[id, value]);
 
     function setTabs(type){
         setType(type);

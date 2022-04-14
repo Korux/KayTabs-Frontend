@@ -2,7 +2,8 @@ import React, { Fragment, useState } from 'react'
 import styled from 'styled-components';
 
 import { getUserCreds } from '../redux/selectors';
-import { useSelector } from 'react-redux';
+import { setUserName, setUserDescription } from '../redux/actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 import TabList from '../components/tablist';
 
@@ -206,6 +207,8 @@ const StyledButton = styled.button`
 
 function Profile(props){
 
+    const dispatch = useDispatch();
+    
 
     const userInfo = useSelector(getUserCreds);
     const [editing, setEditing] = useState(false);
@@ -241,9 +244,12 @@ function Profile(props){
             }else{
                 setName(tmpName);
                 setDesc(tmpDesc);
+                dispatch(setUserName(tmpName));
+                dispatch(setUserDescription(tmpDesc));
                 setEditing(false);
                 setToast('succ');
-                setToastMsg("Profile info saved.")
+                setToastMsg("Profile info saved.");
+                
             }
         });
     };

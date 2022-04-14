@@ -151,6 +151,23 @@ function Tab(props){
     const [toast, setToast] = React.useState('none');
     const [toastMsg, setToastMsg] = React.useState('');
 
+    const [onwerName, setOwnerName] = React.useState('-');
+
+
+    //componentdidmount, get tab owner name
+    useEffect(() => {
+        let mounted = true;
+        fetch(globalVars.server + '/users/' + props.data.owner)
+        .then(response => response.json())
+        .then(data => {
+            if(mounted)setOwnerName(data.name);
+        });
+        return () => {
+            mounted = false;
+        }
+
+    },[]);
+
     useEffect(() => {
         let mounted = true;
         if(mounted && userInfo.id){
@@ -159,6 +176,9 @@ function Tab(props){
             .then(data => {
                 if(mounted)setStarred(data.starred);
             });
+        }
+        return () => {
+            mounted = false;
         }
     },[userInfo]);
 
@@ -257,7 +277,7 @@ function Tab(props){
                     <InfoColumn>
                         <SongTitle>{props.data.title}</SongTitle>
                         <SongAuthor>
-                            created by: <SongAuthorLink to={"/profile/" + props.data.owner}>{props.data.ownername}</SongAuthorLink>
+                            created by: <SongAuthorLink to={"/profile/" + props.data.owner}>{onwerName}</SongAuthorLink>
                         </SongAuthor>
                     </InfoColumn>
 
