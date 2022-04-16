@@ -1,10 +1,16 @@
 {
-  "main.js": "static/js/main.e288f7dd.js",
-  "main.js.map": "static/js/main.e288f7dd.js.map",
-  "static\\media\\eighth.png": "static/media/eighth.623cc8e9.png",
-  "static\\media\\half.png": "static/media/half.61b4c71e.png",
-  "static\\media\\logo.png": "static/media/logo.0b063114.png",
-  "static\\media\\quarter.png": "static/media/quarter.15e220cc.png",
-  "static\\media\\sixteenth.png": "static/media/sixteenth.f524d303.png",
-  "static\\media\\whole.png": "static/media/whole.2767df44.png"
+  "files": {
+    "main.js": "/kaytabs/static/js/main.ca62a11a.js",
+    "static/media/logo.png": "/kaytabs/static/media/logo.d524ef87aa08b49762b9.png",
+    "static/media/sixteenth.png": "/kaytabs/static/media/sixteenth.e4b5caadcc44c8e0edc1.png",
+    "static/media/eighth.png": "/kaytabs/static/media/eighth.710bd7744c6af3b4d9e0.png",
+    "static/media/half.png": "/kaytabs/static/media/half.97feb2f6e28a7d12c941.png",
+    "static/media/whole.png": "/kaytabs/static/media/whole.18e0e1df9d9fcaadb798.png",
+    "static/media/quarter.png": "/kaytabs/static/media/quarter.b13949a28b5d888fb2cf.png",
+    "index.html": "/kaytabs/index.html",
+    "main.ca62a11a.js.map": "/kaytabs/static/js/main.ca62a11a.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.ca62a11a.js"
+  ]
 }
