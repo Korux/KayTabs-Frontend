@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useRef } from 'react';
 import styled from 'styled-components';
 import Measure from '../components/measure';
 import MeasureBase from '../components/measurebase';
@@ -13,12 +13,19 @@ import EditorSideButtons from '../components/editorsidebuttons';
 
 import globalVars from '../global';
 
+import MIDISounds from 'midi-sounds-react';
+
 const MeasureContainer = styled.div`
     padding-top:100px;
     height : auto;
     width : fit-content;
     background-color:${({theme}) => theme.primaryDark};
     margin:0 auto;
+`;
+
+const MidiHiddenDiv = styled.div`
+    height : 0px;
+    display : none;
 `;
 
 const initTabState = {
@@ -50,6 +57,8 @@ function KTabsEditor(){
     const [tabData, setTabData] = React.useState(initTabState);
     const [title, setTitle] = React.useState("");
 
+    const MIDIPitches = [86,83,79,76,72,69,65,62,60,64,67,71,74,77,81,84,88];
+
     /*
         1 = quarter
         2 = half
@@ -73,13 +82,18 @@ function KTabsEditor(){
     const loggedIn = useSelector(getUserLoggedIn);
     const userCreds = useSelector(getUserCreds);
 
+    const MIDIRef = useRef(null);
+
     useEffect(() => {
         let mounted = true;
         if(playLine[0] > 0 && mounted){
-            var currStanza = playLine.slice();
+            playLine[2].length > 1 ? MIDIRef.current.playStrumDownNow(1158, playLine[2], 0.25) : MIDIRef.current.playChordNow(1158, playLine[2], 0.25);
             var currLine = playLine[1][playLine[1].length - 1];
+            var currNoteType = tabData.notes[playLine[0] - 1][4 - playLine[1][0]];
+            currNoteType = Math.max.apply(null, currNoteType);
             var nextLine = currLine === 4 ? [playLine[0] + 1, 1] : [playLine[0], currLine + 1];
             var nextNoteType;
+            var kalimbaNotes = [];
             if(nextLine[0] > tabData.measures){
                 nextLine = [0,0];
                 nextNoteType = 0;
@@ -95,29 +109,32 @@ function KTabsEditor(){
                     }
                     nextNoteType = tabData.notes[nextLine[0] - 1][4 - nextLine[1]];
                     nextNoteType = Math.max.apply(null, nextNoteType);
+                    
                 }
             }
+
+            if(tabData.notes[nextLine[0] - 1])kalimbaNotes = tabData.notes[nextLine[0] - 1][4 - nextLine[1]].map((x,i) => x > 0 ? MIDIPitches[i] : 0).filter(x => x > 0);
 
             var newLine;
             switch(nextNoteType){
                 case 1:
-                    newLine = [nextLine[0], [nextLine[1]]];
+                    newLine = [nextLine[0], [nextLine[1]], kalimbaNotes];
                     break;
                 case 2:
-                    newLine = [nextLine[0], [nextLine[1], nextLine[1] + 1]];
+                    newLine = [nextLine[0], [nextLine[1], nextLine[1] + 1], kalimbaNotes];
                     break;
                 case 4:
-                    newLine = [nextLine[0], [nextLine[1], nextLine[1] + 1, nextLine[1] + 2, nextLine[1] + 3]];
+                    newLine = [nextLine[0], [nextLine[1], nextLine[1] + 1, nextLine[1] + 2, nextLine[1] + 3],kalimbaNotes];
                     break;
                 default:
-                    newLine = [nextLine[0], [nextLine[1]]];
+                    newLine = [nextLine[0], [nextLine[1]], kalimbaNotes];
                     break;
             }
 
-            var Time = 60000 * currStanza[1].length / BPM;
-            if(nextNoteType === 8){
+            var Time = 60000 * playLine[1].length / BPM;
+            if(currNoteType === 8){
                 Time = Time / 2;
-            }else if(nextNoteType === 16){
+            }else if(currNoteType === 16){
                 Time = Time / 4;
             }
 
@@ -268,13 +285,19 @@ function KTabsEditor(){
         }
         setPlaying(true);
         if(tabData.notes[0][3].includes(1)){
-            setPlayLine([1,[1]]);
+            setPlayLine([1,[1],tabData.notes[0][3].map((x,i) => x > 0 ? MIDIPitches[i] : 0).filter(x => x > 0)]);
         }
         else if(tabData.notes[0][3].includes(2)){
-            setPlayLine([1,[1,2]]);
+            setPlayLine([1,[1,2],tabData.notes[0][3].map((x,i) => x > 0 ? MIDIPitches[i] : 0).filter(x => x > 0)]);
         }
         else if(tabData.notes[0][3].includes(4)){
-            setPlayLine([1,[1,2,3,4]]);
+            setPlayLine([1,[1,2,3,4], tabData.notes[0][3].map((x,i) => x > 0 ? MIDIPitches[i] : 0).filter(x => x > 0)]);
+        }
+        else if(tabData.notes[0][3].includes(8)){
+            setPlayLine([1,[1], tabData.notes[0][3].map((x,i) => x > 0 ? MIDIPitches[i] : 0).filter(x => x > 0)]);
+        }
+        else if(tabData.notes[0][3].includes(16)){
+            setPlayLine([1,[1], tabData.notes[0][3].map((x,i) => x > 0 ? MIDIPitches[i] : 0).filter(x => x > 0)]);
         }
     }
 
@@ -282,6 +305,14 @@ function KTabsEditor(){
         <Fragment>
             <ErrorToast onClose={() => setToast('none')} show={toast === 'err'} message={toastMsg}/>
             <SuccessToast onClose={() => setToast('none')} show={toast === 'succ'} message={toastMsg}/>
+
+            <MidiHiddenDiv>
+            <MIDISounds
+            ref={MIDIRef} 
+            appElementName="root" instruments={[1158]} 
+            />
+            </MidiHiddenDiv>
+
             <ToolBar mode={selectedMode} setMode={setSelectedMode} note={selectedNote} setNote={setSelectedNote} title={title} setTitle={setTitle} bpm={BPM} setBPM={validateAndSetBPM}/>
             <EditorSideButtons onAdd={addMeasure} onRemove={removeMeasure} onClear={clearMeasure} onSave={saveTablature} onPlay={playTablature} playing={playing}/>
             <MeasureContainer>

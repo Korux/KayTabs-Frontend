@@ -201,7 +201,7 @@ function PlayerInfo(props){
             mounted = false;
         }
 
-    },[]);
+    },[props.data]);
 
     useEffect(() => {
         let mounted = true;

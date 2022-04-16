@@ -168,7 +168,17 @@ function Measure(props){
 
     function removeNote(i,j){
         let newData = props.data.notes.slice();
-        newData[props.count-1][j][i] = 0;
+        if(newData[props.count-1][j][i] === 2){
+            newData[props.count-1][j][i] = 0;
+            newData[props.count-1][j-1][i] = 0;
+        }else if(newData[props.count-1][j][i] === 4){
+            newData[props.count-1][j][i] = 0;
+            newData[props.count-1][j-1][i] = 0;
+            newData[props.count-1][j-2][i] = 0;
+            newData[props.count-1][j-3][i] = 0;
+        }else{
+            newData[props.count-1][j][i] = 0;
+        }
         let mCount = props.data.measures;
         props.setData({measures:mCount, notes:newData});
     }
